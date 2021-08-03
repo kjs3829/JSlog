@@ -2,6 +2,7 @@ package com.jslog.blog.domain;
 
 import com.jslog.blog.domain.member.Member;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class MemberMySQLRepository implements MemberRepository{
-    private EntityManager em;
+    private final EntityManager em;
 
     @Override
     public List findAll() {
