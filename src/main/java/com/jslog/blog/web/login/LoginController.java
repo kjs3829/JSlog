@@ -3,7 +3,6 @@ package com.jslog.blog.web.login;
 import com.jslog.blog.domain.login.LoginService;
 import com.jslog.blog.domain.member.Member;
 import com.jslog.blog.web.SessionConst;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
     private final LoginService loginService;
 
-    //TODO : sign-in.html 수정
     @GetMapping("/login")
     public String loginForm(@ModelAttribute LoginForm loginForm) {
         return "sign-in";
@@ -38,6 +36,15 @@ public class LoginController {
         //로그인 성공
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+        return "redirect:/";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 }
