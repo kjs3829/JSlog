@@ -3,12 +3,12 @@ package com.jslog.blog.domain.post;
 import com.jslog.blog.domain.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 
-@Entity
-@Getter @ToString
+@Entity @Getter
 @NoArgsConstructor
 public class Post {
 
@@ -27,5 +27,11 @@ public class Post {
         this.author = author;
         this.title = title;
         this.content = content;
+    }
+
+    // 로그에 찍히는 content 길이 최대 40글자
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(new PostToString(this), ToStringStyle.MULTI_LINE_STYLE);
     }
 }

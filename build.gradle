@@ -29,6 +29,11 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+	// ToStringBuilder
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
 }
 
 test {

@@ -2,14 +2,15 @@ package com.jslog.blog.domain.member;
 
 import com.jslog.blog.domain.post.Post;
 import lombok.Getter;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @ToString
+@Getter
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -64,5 +65,11 @@ public class Member {
             return new Member(this);
         }
 
+    }
+
+    // Member의 posts는 로그에서 제거
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(new MemberToString(this), ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }
