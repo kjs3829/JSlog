@@ -1,7 +1,6 @@
 package com.jslog.blog.domain;
 
 import com.jslog.blog.domain.member.Member;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

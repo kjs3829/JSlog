@@ -29,13 +29,16 @@ public class Member {
     }
 
     public Member(Builder builder) {
+        this.id = builder.id;
         this.email = builder.email;
         this.password = builder.password;
         this.nickname = builder.nickname;
         this.memberRole = builder.memberRole;
+
     }
 
     public static class Builder {
+        private Long id;
         private String email;
         private String password;
         private String nickname;
@@ -58,6 +61,11 @@ public class Member {
 
         public Builder setMemberRole(MemberRole memberRole) {
             this.memberRole = memberRole;
+            return this;
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
             return this;
         }
 
