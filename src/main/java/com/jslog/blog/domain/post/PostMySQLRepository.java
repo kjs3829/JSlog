@@ -15,7 +15,6 @@ import java.util.List;
 public class PostMySQLRepository implements PostRepository{
     private final EntityManager em;
 
-
     @Override
     public List<Post> findAll() {
         return em.createQuery("select p from Post p").getResultList();
@@ -29,16 +28,45 @@ public class PostMySQLRepository implements PostRepository{
     }
 
     @Override
-    public Long save(Post post) {
-        em.persist(post);
-        log.info("Save Post = {}", post.toString());
-        return post.getId();
+    public Post findByUrl(String url) {
+        List result = em.createQuery("select p from Post p where p.url = :url")
+                .setParameter("url", url).getResultList();
+        log.info("FindByUrl Post = {}", result);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return (Post) result.get(0);
     }
 
     @Override
-    public void remove(Long id) {
+    public boolean hasUrl(String url) {
+        Post result = findByUrl(url);
+        return result != null;
+    }
+
+    @Override
+    public Long save(PostWriteForm writeForm) {
+        Post newPost = new Post(writeForm);
+        em.persist(newPost);
+        log.info("Save Post = {}", newPost.toString());
+        return newPost.getId();
+    }
+
+    @Override
+    public void delete(Long id) {
         Post removePost = em.find(Post.class, id);
         log.info("Remove Post ={}", removePost);
         em.remove(removePost);
+    }
+
+    @Override
+    public Long update(Long id, PostEditForm postEditForm) {
+        Post findPost = findById(id);
+        findPost.edit(postEditForm);
+        return id;
+    }
+
+    public boolean hasId(Long id) {
+        return em.find(Post.class, id) != null;
     }
 }

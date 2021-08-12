@@ -22,11 +22,26 @@ public class Post {
 
     private String title;
     private String content;
+    private String url;
 
-    public Post(Member author, String title, String content) {
+    public Post(PostWriteForm postWriteForm) {
+        this.author = postWriteForm.getAuthor();
+        this.title = postWriteForm.getTitle();
+        this.content = postWriteForm.getContent();
+        this.url = postWriteForm.getUrl();
+    }
+
+    public Post(Member author, String title, String content, String url) {
         this.author = author;
         this.title = title;
         this.content = content;
+        this.url = url;
+    }
+
+    public void edit(PostEditForm postEditForm) {
+        this.title = postEditForm.getTitle();
+        this.content = postEditForm.getContent();
+        this.url = postEditForm.getUrl();
     }
 
     // 로그에 찍히는 content 길이 최대 40글자

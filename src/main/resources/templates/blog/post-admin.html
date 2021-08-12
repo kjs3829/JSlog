@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="megakit,business,company,agency,multipurpose,modern,bootstrap4">
+
+    <meta name="author" content="themefisher.com">
+
+    <title th:text="'JSLog - ' + ${post.title}">Post</title>
+
+    <link th:insert="/common/csss.html">
+    <style>
+		.post_row{
+			display: -ms-flexbox;
+			display: flex;
+			-ms-flex-wrap: wrap;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px;
+			flex-direction: column;
+    		align-items: center;
+		}
+		textarea{
+			resize: none;
+		}
+		.buttons-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-webkit-justify-content:flex-end;-ms-flex-pack:end;justify-content:flex-end;}
+	</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav th:insert="/common/navigation.html"></nav>
+
+<div class="main-wrapper ">
+    <section class="section blog-wrap">
+        <div class="container">
+            <div class="post_row">
+                <div class="col-lg-10">
+                    <div class="row">
+                        <div class="col-lg-12 mb-5">
+                            <div class="single-blog-item">
+                                <!-- Thumbnail
+                                <img src="/images/blog/2.jpg" alt="" class="img-fluid rounded">
+                                -->
+                                <div class="blog-item-content bg-white p-5">
+                                    <!-- Title -->
+                                    <h1 class="mt-3 mb-4" th:text="${post.title}"><a href="blog-single.html"></a></h1>
+                                    <!-- Title End -->
+
+                                    <hr width="100%">
+
+                                    <!-- author, created_date, edit_button, delete_button -->
+                                    <div class="blog-item-meta py-1">
+                                        <span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
+                                        <span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> 2021년 8월 8일</span>
+                                        <span class="text-black text-capitalize mr-3"><a th:href="@{edit(id=${post.id})}">수정</a></span>
+                                        <form th:object="${postDeleteForm}" action="/posts" th:method="delete">
+                                            <input type="hidden" name="_method" value="delete"/>
+                                            <input type="hidden" th:field="*{id}">
+                                            <button type="submit">삭제</button>
+                                        </form>
+                                    </div>
+                                    <!-- author, created_date, edit_button, delete_button End-->
+
+                                    <!-- Tag -->
+                                    <div class="tag-option mt-2 mb-4 clearfix">
+                                        <ul class="float-left list-inline">
+                                            <li class="list-inline-item"><a href="#" rel="tag">네트워크</a></li>
+                                            <li class="list-inline-item"><a href="#" rel="tag">IP</a></li>
+                                            <li class="list-inline-item"><a href="#" rel="tag">Test</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Tag End-->
+
+                                    <!-- Content -->
+                                    <div>
+                                        <span th:text="${post.content}"></span>
+                                    </div>
+                                    <!-- Content End -->
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mb-5" width="90%">
+
+                        <div class="col-lg-12 mb-5 px-5">
+                            <div class="posts-nav bg-gray p-4 d-lg-flex d-md-flex justify-content-between rounded">
+                                <a class="post-prev align-items-center" href="#">
+                                    <div class="posts-prev-item mb-4 mb-lg-0">
+                                        <span class="nav-posts-desc text-color">- 이전 포스트</span>
+                                        <h6 class="nav-posts-title t-1">
+                                            Donec consectetuer ligula <br>vulputate sem tristique.
+                                        </h6>
+                                    </div>
+                                </a>
+                                <div class="border"></div>
+                                <a class="posts-next" href="#">
+                                    <div class="posts-next-item pt-4 pt-lg-0">
+                                        <span class="nav-posts-desc text-lg-right text-md-right text-color d-block">- 다음 포스트</span>
+                                        <h6 class="nav-posts-title mt-1">
+                                            Ut aliquam sollicitudin leo.
+                                        </h6>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="comment-area card border-0 p-5">
+                                <h4 class="mb-4">0개의 댓글</h4>
+                                <div class="col-lg-12 px-0 mb-5">
+                                    <form class="contact-form bg-white rounded" id="comment-form">
+                                        <textarea class="form-control mb-3" name="comment" id="comment" cols="30" rows="3" placeholder="댓글을 작성하세요"></textarea>
+
+                                        <div class="buttons-wrapper">
+                                            <input class="btn btn-primary px-3 py-2 rounded" type="submit" name="submit-contact" id="submit_contact" value="댓글 작성">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- footer-->
+    <footer th:insert="common/footer.html"></footer>
+
+</div>
+
+<!-- Essential Scripts -->
+<meta th:insert="/common/scripts.html">
+
+</body>
+</html>
