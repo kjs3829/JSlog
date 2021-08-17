@@ -26,9 +26,6 @@ public class HomeController {
         return "portfolio";
     }
 
-    @GetMapping("/blog")
-    public String blog() {
-        return "blog";
     }
 
 }

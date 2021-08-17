@@ -11,4 +11,6 @@ public interface PostRepository {
     public Post findByUrl(String url);
     public boolean hasUrl(String url);
     public boolean hasId(Long id);
+    public List<Post> getPage(Integer page);
+    public int getMaxPage();
 }

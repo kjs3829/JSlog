@@ -66,7 +66,27 @@ public class PostMySQLRepository implements PostRepository{
         return id;
     }
 
+    @Override
     public boolean hasId(Long id) {
         return em.find(Post.class, id) != null;
+    }
+
+    @Override
+    public List<Post> getPage(Integer page) {
+        if (page <= 0) {
+            return null;
+        }
+        log.info("page = {}", page);
+        List<Post> resultList = em.createQuery("select p from Post p order by p.id desc")
+                .setFirstResult((page - 1) * 4 + 1)
+                .setMaxResults(page * 4).getResultList();
+        return resultList;
+    }
+
+    @Override
+    public int getMaxPage() {
+        Long singleResult = (Long) em.createQuery("select count(p) from Post p")
+                .getSingleResult();
+        return singleResult.intValue() / 4;
     }
 }
