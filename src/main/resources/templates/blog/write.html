@@ -43,6 +43,12 @@
 					<p class="field-error" th:text="${#fields.globalErrors()}">전체 오류 메시지</p>
 				</div>
 			</div>
+
+			<div class="mb-5">
+				<label for="tags">Tags</label>
+				<textarea class="form-control" id="tags" rows="1" cols="40" placeholder="내용을 입력하세요" th:field="*{tags}"></textarea>
+			</div>
+
 			<button class="btn btn-primary" type="submit">저장하기</button>
 		</form>
 	</div>

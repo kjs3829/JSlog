@@ -1,9 +1,13 @@
-package com.jslog.blog.domain.post;
+package com.jslog.blog.domain.post.form;
 
 import com.jslog.blog.domain.member.Member;
+import com.jslog.blog.domain.post.entity.Post;
+import com.jslog.blog.domain.post.entity.PostWithTag;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter @Setter @ToString
 public class PostReadForm {
@@ -12,6 +16,7 @@ public class PostReadForm {
     private String title;
     private String content;
     private String url;
+    private List<String> tags;
 
     public PostReadForm(Post post) {
         this.id = post.getId();
@@ -19,5 +24,6 @@ public class PostReadForm {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.url = post.getUrl();
+        this.tags = post.getTags();
     }
 }

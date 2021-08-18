@@ -1,5 +1,7 @@
 package com.jslog.blog.domain.post;
 
+import com.jslog.blog.domain.post.entity.Post;
+import com.jslog.blog.domain.post.form.PostEditForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -45,11 +47,10 @@ public class PostMySQLRepository implements PostRepository{
     }
 
     @Override
-    public Long save(PostWriteForm writeForm) {
-        Post newPost = new Post(writeForm);
-        em.persist(newPost);
-        log.info("Save Post = {}", newPost.toString());
-        return newPost.getId();
+    public Long save(Post post) {
+        em.persist(post);
+        log.info("Save Post = {}", post.toString());
+        return post.getId();
     }
 
     @Override

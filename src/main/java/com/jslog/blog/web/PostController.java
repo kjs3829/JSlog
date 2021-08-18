@@ -3,6 +3,11 @@ package com.jslog.blog.web;
 import com.jslog.blog.domain.MemberRepository;
 import com.jslog.blog.domain.member.Member;
 import com.jslog.blog.domain.post.*;
+import com.jslog.blog.domain.post.entity.Post;
+import com.jslog.blog.domain.post.form.PostDeleteForm;
+import com.jslog.blog.domain.post.form.PostEditForm;
+import com.jslog.blog.domain.post.form.PostReadForm;
+import com.jslog.blog.domain.post.form.PostWriteForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -22,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final PostRepository postRepository;
+    private final PostService postService;
     private final MemberRepository memberRepository;
 
     /*
@@ -91,7 +97,7 @@ public class PostController {
 
 
         postWriteForm.setAuthor((Member) session.getAttribute(SessionConst.LOGIN_MEMBER));
-        postRepository.save(postWriteForm);
+        postService.write(postWriteForm);
         return "redirect:/posts/" + postUrl;
     }
 

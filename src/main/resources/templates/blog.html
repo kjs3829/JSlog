@@ -38,8 +38,16 @@
 											<h1 class="mt-3 mb-3"><a th:text="${post.title}" th:href="@{/posts/{url} (url=${post.url})}"></a></h1>
 											<p class="mb-4">Non illo quas blanditiis repellendus laboriosam minima animi. Consectetur accusantium pariatur repudiandae!</p>
 
+											<div class="bg-white rounded tags mb-3">
+												<th:block th:each="tag : ${post.tags}">
+													<a th:text="${tag}" href="#"></a>
+												</th:block>
+											</div>
+
 											<!-- Tag
-											<div class="sidebar-widget bg-white rounded tags mb-3">
+											<div class="sidebar-widget bg-white rounded tags p-4 mb-3">
+												<h5 class="mb-4">Tags</h5>
+
 												<a href="#">Web</a>
 												<a href="#">agency</a>
 												<a href="#">company</a>
@@ -54,6 +62,7 @@
 											<!-- Created Date, Comment count
 											<a href="blog-single.html" class="btn btn-small btn-main btn-round-full">Learn More</a>
 											-->
+											<p class="mb-4" th:text="${post.createdDate}">Created Date</p>
 										</div>
 									</div>
 								</div>

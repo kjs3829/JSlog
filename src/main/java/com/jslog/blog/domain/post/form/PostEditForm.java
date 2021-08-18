@@ -1,4 +1,4 @@
-package com.jslog.blog.domain.post;
+package com.jslog.blog.domain.post.form;
 
 import com.jslog.blog.domain.member.Member;
 import lombok.Getter;

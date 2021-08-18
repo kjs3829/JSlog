@@ -53,7 +53,7 @@
                                     <hr width="100%">
 
                                     <!-- author, created_date, edit_button, delete_button -->
-                                    <div class="blog-item-meta py-1">
+                                    <div class="blog-item-meta py-1 mb-2">
                                         <span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
                                         <span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> 2021년 8월 8일</span>
                                         <span class="text-black text-capitalize mr-3"><a th:href="@{edit(id=${post.id})}">수정</a></span>
@@ -66,12 +66,10 @@
                                     <!-- author, created_date, edit_button, delete_button End-->
 
                                     <!-- Tag -->
-                                    <div class="tag-option mt-2 mb-4 clearfix">
-                                        <ul class="float-left list-inline">
-                                            <li class="list-inline-item"><a href="#" rel="tag">네트워크</a></li>
-                                            <li class="list-inline-item"><a href="#" rel="tag">IP</a></li>
-                                            <li class="list-inline-item"><a href="#" rel="tag">Test</a></li>
-                                        </ul>
+                                    <div class="bg-white rounded tags mb-5">
+                                        <th:block th:each="tag : ${post.tags}">
+                                            <a th:text="${tag}" href="#"></a>
+                                        </th:block>
                                     </div>
                                     <!-- Tag End-->
 

@@ -1,6 +1,6 @@
 package com.jslog.blog.domain.member;
 
-import com.jslog.blog.domain.post.Post;
+import com.jslog.blog.domain.post.entity.Post;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -34,7 +34,6 @@ public class Member {
         this.password = builder.password;
         this.nickname = builder.nickname;
         this.memberRole = builder.memberRole;
-
     }
 
     public static class Builder {

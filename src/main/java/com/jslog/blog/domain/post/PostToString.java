@@ -1,6 +1,7 @@
 package com.jslog.blog.domain.post;
 
 import com.jslog.blog.domain.member.Member;
+import com.jslog.blog.domain.post.entity.Post;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,7 @@
-package com.jslog.blog.domain.post;
+package com.jslog.blog.domain.post.form;
 
 import com.jslog.blog.domain.member.Member;
+import com.jslog.blog.domain.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,4 +15,6 @@ public class PostWriteForm {
     private String content;
     @NotEmpty
     private String url;
+    private String tags;
+
 }
