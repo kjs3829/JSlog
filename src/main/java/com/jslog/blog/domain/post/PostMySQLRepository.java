@@ -78,7 +78,7 @@ public class PostMySQLRepository implements PostRepository{
         }
         log.info("page = {}", page);
         List<Post> resultList = em.createQuery("select p from Post p order by p.id desc")
-                .setFirstResult((page - 1) * 4 + 1)
+                .setFirstResult((page - 1) * 4)
                 .setMaxResults(page * 4).getResultList();
         return resultList;
     }
@@ -87,6 +87,6 @@ public class PostMySQLRepository implements PostRepository{
     public int getMaxPage() {
         Long singleResult = (Long) em.createQuery("select count(p) from Post p")
                 .getSingleResult();
-        return singleResult.intValue() / 4;
+        return singleResult.intValue() / 5 + 1;
     }
 }
