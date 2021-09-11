@@ -31,6 +31,7 @@
 
 <body>
 
+	<input type="text" id="getContent" th:value="${post.content}" hidden>
 	<!-- Navigation -->
 	<nav th:insert="/common/navigation.html"></nav>
 
@@ -55,21 +56,20 @@
 										<!-- author, created_date, edit_button, delete_button -->
 										<div class="blog-item-meta py-1 mb-2">
 											<span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
-											<span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> 2021년 8월 8일</span>
+											<span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> <span th:text="${post.createdDate}">2021년 8월 8일</span></span>
 										</div>
 										<!-- author, created_date, edit_button, delete_button End-->
 
 										<!-- Tag -->
 										<div class="bg-white rounded tags mb-5">
 											<th:block th:each="tag : ${post.tags}">
-												<a th:text="${tag}" href="#"></a>
+												<a th:text="${tag.name}" th:href="@{/blog/{tag} (tag=${tag.name})}"></a>
 											</th:block>
 										</div>
 										<!-- Tag End-->
 
 										<!-- Content -->
-										<div>
-											<span th:text="${post.content}"></span>
+										<div id="content">
 										</div>
 										<!-- Content End -->
 
@@ -130,4 +130,8 @@
 	<meta th:insert="/common/scripts.html">
 
 </body>
+<script type="text/javascript">
+  content = document.getElementById('getContent').value
+  document.getElementById('content').innerHTML=content
+</script>
 </html>

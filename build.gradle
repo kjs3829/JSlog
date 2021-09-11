@@ -35,6 +35,9 @@ dependencies {
 	// ToStringBuilder
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark
+	implementation group: 'org.commonmark', name: 'commonmark', version: '0.18.0'
+
 }
 
 test {

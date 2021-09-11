@@ -30,7 +30,7 @@
 </head>
 
 <body>
-
+<input type="text" id="getContent" th:value="${post.content}" hidden>
 <!-- Navigation -->
 <nav th:insert="/common/navigation.html"></nav>
 
@@ -68,14 +68,13 @@
                                     <!-- Tag -->
                                     <div class="bg-white rounded tags mb-5">
                                         <th:block th:each="tag : ${post.tags}">
-                                            <a th:text="${tag}" href="#"></a>
+                                            <a th:text="${tag.name}" th:href="@{/blog/{tag} (tag=${tag.name})}"></a>
                                         </th:block>
                                     </div>
                                     <!-- Tag End-->
 
                                     <!-- Content -->
-                                    <div>
-                                        <span th:text="${post.content}"></span>
+                                    <div id="content">
                                     </div>
                                     <!-- Content End -->
 
@@ -136,4 +135,8 @@
 <meta th:insert="/common/scripts.html">
 
 </body>
+<script type="text/javascript">
+  content = document.getElementById('getContent').value
+  document.getElementById('content').innerHTML=content
+</script>
 </html>

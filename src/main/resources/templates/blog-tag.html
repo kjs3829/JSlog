@@ -23,9 +23,8 @@
 		<section class="section blog-wrap bg-gray">
 			<div class="container">
 				<div class="row pb-3">
-					<h1># 게시글</h1>
+					<h1 th:text="'# ' + ${tag}">tag</h1>
 				</div>
-
 				<div class="row">
 
 					<div class="col-lg-9">
@@ -118,38 +117,6 @@
 					<!---->
 				</div>
 
-				<div class="row mt-5">
-					<div class="col-lg-8">
-						<nav class="navigation pagination py-2 d-inline-block">
-							<div class="nav-links">
-
-								<a th:if="${pageSelector.prev}" class="prev page-numbers" th:href="@{/blog(page=${pageSelector.prevPage})}">Prev</a>
-								<a th:unless="${pageSelector.prev}" class="prev page-numbers">Prev</a>
-
-								<!-- Front -->
-								<th:block th:if="${pageSelector.toFirstPageButton}">
-									<a class="page-numbers" href="/blog?page=1">1</a>
-									<span style="color:#c9c9c9">...</span>
-								</th:block>
-
-								<!-- page List -->
-								<th:block th:each="page : ${pageSelector.pageList}">
-									<span th:if="${page} == ${pageSelector.currentPage}" class="page-numbers current" th:text="${page}" th:href="@{/blog(page=${page})}">current Page</span>
-									<a th:unless="${page} == ${pageSelector.currentPage}" class="page-numbers" th:text="${page}" th:href="@{/blog(page=${page})}">Pages</a>
-								</th:block>
-
-								<!-- Back -->
-								<th:block th:if="${pageSelector.toEndPageButton}">
-									<span style="color:#c9c9c9">...</span>
-									<a class="page-numbers" th:href="@{/blog(page=${pageSelector.maxPage})}" th:text="${pageSelector.maxPage}">max page</a>
-								</th:block>
-
-								<a th:if="${pageSelector.next}" class="prev page-numbers" th:href="@{/blog(page=${pageSelector.nextPage})}">Next</a>
-								<a th:unless="${pageSelector.next}" class="prev page-numbers">Next</a>
-							</div>
-						</nav>
-					</div>
-				</div>
 			</div>
 		</section>
 
