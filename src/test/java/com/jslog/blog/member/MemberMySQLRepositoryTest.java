@@ -1,8 +1,8 @@
 package com.jslog.blog.member;
 
-import com.jslog.blog.domain.MemberRepository;
-import com.jslog.blog.domain.member.Member;
-import com.jslog.blog.domain.member.MemberRole;
+import jslog.domain.MemberRepository;
+import jslog.domain.member.Member;
+import jslog.domain.member.MemberRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

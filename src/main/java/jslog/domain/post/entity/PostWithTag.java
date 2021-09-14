@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity @Getter
 public class PostWithTag {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_no_tag_id")
+    @Column(name = "post_with_tag_id")
     private Long id;
 
     @ManyToOne

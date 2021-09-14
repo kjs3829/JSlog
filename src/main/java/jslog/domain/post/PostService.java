@@ -27,7 +27,7 @@ public class PostService {
         String tags = form.getTags();
         String[] tagList = tags.split(",");
         for (String tagName : tagList) {
-            Tag tag = new Tag(tagName);
+            Tag tag = new Tag(tagName.trim());
             tagRepository.save(tag);
             postWithTagRepository.save(post, tag);
         }

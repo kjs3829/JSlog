@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>About</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom fonts for this template -->
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- Custom styles for this template -->
+        <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav th:insert="common/navigation.html"></nav>
+
+        <!-- Page Header -->
+        <header class="masthead" style="background-image: url('/img/header-bg.jpg')">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="site-heading">
+                            <h1>JS LOG</h1>
+                            <span class="subheading">개발 블로그</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <p>이 블로그는 Spring 공부 및 공부한 내용을 블로깅 하기 위해 2021년 3월에 제작되어졌습니다.</p>
+                        <p></p>
+                        <p><a href="https://github.com/naver/smarteditor2">Naver SmartEditor</a>연동, 로그인 기능을 업데이트할 예정입니다.</p>
+                        <p></p>
+                        <p>사용 기술 스택</p>
+                        <p class="block-color-blue"><strong>Spring, AWS EC2, AWS RDS, MySQL</strong></p>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <nav th:insert="common/footer.html"></nav>
+    </body>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="/js/clean-blog.min.js"></script>
+    <script src="/js/navigation_loginout.js"></script>
+</html>
