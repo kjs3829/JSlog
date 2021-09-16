@@ -53,6 +53,18 @@ public class PostController {
         }
 
         PostReadForm post = new PostReadForm(findPost);
+        if (findPost.getBeforePostId() != null) {
+            Post bp = postRepository.findById(findPost.getBeforePostId());
+            log.debug("bp title = {}", bp.getTitle());
+            post.setBeforePostTitle(bp.getTitle());
+            post.setBeforePostUrl(bp.getUrl());
+        }
+        if (findPost.getNextPostId() != null) {
+            Post np = postRepository.findById(findPost.getNextPostId());
+            post.setNextPostTitle(np.getTitle());
+            post.setNextPostUrl(np.getUrl());
+        }
+
         model.addAttribute("post", post);
 
         HttpSession session = request.getSession(false);
@@ -199,7 +211,7 @@ public class PostController {
             return "redirect:/login";
         }
 
-        postRepository.delete(deletePostId);
+        postService.delete(deletePostId);
         log.info("Delete Post = {}", deletePostId);
         return "redirect:/blog";
     }

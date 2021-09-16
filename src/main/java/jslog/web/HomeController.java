@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home(HttpServletRequest request) {
-        return "home";
+    @GetMapping("")
+    public String home() {
+        return "redirect:/blog";
     }
 
     @GetMapping("/about")

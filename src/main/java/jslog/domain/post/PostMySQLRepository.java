@@ -90,4 +90,11 @@ public class PostMySQLRepository implements PostRepository{
                 .getSingleResult();
         return singleResult.intValue() / 5 + 1;
     }
+
+    @Override
+    public Long getBeforePostId() {
+        List resultList = em.createQuery("select p from Post p order by p.createdDate desc")
+                .setMaxResults(1).getResultList();
+        return ((Post) resultList.get(0)).getId();
+    }
 }

@@ -16,4 +16,5 @@ public interface PostRepository {
     public boolean hasId(Long id);
     public List<Post> getPage(Integer page);
     public int getMaxPage();
+    public Long getBeforePostId();
 }

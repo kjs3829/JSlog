@@ -22,6 +22,10 @@ public class PostReadForm {
     private String url;
     private List<Tag> tags;
     private String createdDate;
+    private String beforePostUrl;
+    private String nextPostUrl;
+    private String beforePostTitle;
+    private String nextPostTitle;
 
     public PostReadForm(Post post) {
         this.id = post.getId();

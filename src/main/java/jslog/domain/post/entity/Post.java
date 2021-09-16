@@ -34,6 +34,8 @@ public class Post extends BaseTimeEntity {
     private String content;
     private String url;
     private String preview;
+    private Long beforePostId;
+    private Long nextPostId;
 
     public Post(Builder builder) {
         this.id = builder.id;
@@ -42,6 +44,8 @@ public class Post extends BaseTimeEntity {
         this.content = builder.content;
         this.url = builder.url;
         this.preview = builder.preview;
+        this.beforePostId = builder.beforePostId;
+        this.nextPostId = builder.nextPostId;
     }
 
     public Post(PostWriteForm postWriteForm) {
@@ -85,6 +89,8 @@ public class Post extends BaseTimeEntity {
         private String content;
         private String url;
         private String preview;
+        private Long beforePostId;
+        private Long nextPostId;
 
         public Builder setAuthor(Member author) {
             this.author = author;
@@ -116,9 +122,27 @@ public class Post extends BaseTimeEntity {
             return this;
         }
 
+        public Builder setBeforePostId(Long beforePostId) {
+            this.beforePostId = beforePostId;
+            return this;
+        }
+
+        public Builder setNextPostId(Long nextPostId) {
+            this.nextPostId = nextPostId;
+            return this;
+        }
+
         public Post build() {
             return new Post(this);
         }
 
+    }
+
+    public void setBeforePostId(Long beforePostId) {
+        this.beforePostId = beforePostId;
+    }
+
+    public void setNextPostId(Long nextPostId) {
+        this.nextPostId = nextPostId;
     }
 }

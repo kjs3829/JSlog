@@ -80,23 +80,29 @@
 							<hr class="mb-5" width="90%">
 
 							<div class="col-lg-12 mb-5 px-5">
-								<div class="posts-nav bg-gray p-4 d-lg-flex d-md-flex justify-content-between rounded">
-									<a class="post-prev align-items-center" href="#">
+								<div class="posts-nav p-4 d-lg-flex d-md-flex justify-content-between rounded">
+									<a th:if="${post.beforePostUrl}" class="post-prev align-items-center" th:href="@{/posts/{url} (url=${post.beforePostUrl})}">
 										<div class="posts-prev-item mb-4 mb-lg-0">
 											<span class="nav-posts-desc text-color">- 이전 포스트</span>
-											<h6 class="nav-posts-title t-1">
+											<h6 class="nav-posts-title t-1" th:text="${post.beforePostTitle}">
 												Donec consectetuer ligula <br>vulputate sem tristique.
 											</h6>
 										</div>
 									</a>
-									<div class="border"></div>
-									<a class="posts-next" href="#">
-										<div class="posts-next-item pt-4 pt-lg-0">
-											<span class="nav-posts-desc text-lg-right text-md-right text-color d-block">- 다음 포스트</span>
-											<h6 class="nav-posts-title mt-1">
-												Ut aliquam sollicitudin leo.
+									<a th:unless="${post.beforePostUrl}" class="post-prev align-items-center">
+										<div class="posts-prev-item mb-4 mb-lg-0"></div>
+									</a>
+
+									<a th:if="${post.nextPostUrl}" class="post-prev align-items-center" th:href="@{/posts/{url} (url=${post.nextPostUrl})}">
+										<div class="posts-prev-item mb-4 mb-lg-0">
+											<span class="nav-posts-desc text-color">- 다음 포스트</span>
+											<h6 class="nav-posts-title t-1" th:text="${post.nextPostTitle}">
+												Donec consectetuer ligula <br>vulputate sem tristique.
 											</h6>
 										</div>
+									</a>
+									<a th:unless="${post.nextPostUrl}" class="post-prev align-items-center">
+										<div class="posts-prev-item mb-4 mb-lg-0"></div>
 									</a>
 								</div>
 							</div>
