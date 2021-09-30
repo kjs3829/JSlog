@@ -4,6 +4,7 @@ import jslog.domain.member.Member;
 import jslog.domain.post.BaseTimeEntity;
 import jslog.domain.post.PostToString;
 import jslog.domain.post.form.PostEditForm;
+import jslog.domain.post.form.PostReadForm;
 import jslog.domain.post.form.PostSelectForm;
 import jslog.domain.post.form.PostWriteForm;
 import lombok.Getter;
@@ -55,6 +56,9 @@ public class Post extends BaseTimeEntity {
         this.url = postWriteForm.getUrl();
     }
 
+    public PostReadForm toReadForm() {
+        return new PostReadForm(this);
+    }
     public PostSelectForm toSelectForm() {
         return new PostSelectForm(this);
     }

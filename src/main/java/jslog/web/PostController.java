@@ -30,7 +30,6 @@ import java.util.List;
 public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
-    private final MemberRepository memberRepository;
 
     /*
         TODO:
@@ -45,25 +44,15 @@ public class PostController {
     }
 
     @GetMapping("/{url}")
-    public String singlePost(@PathVariable String url, Model model, HttpServletRequest request) {
+    public String getPostByUrl(@PathVariable String url, Model model, HttpServletRequest request) {
         Post findPost = postRepository.findByUrl(url);
 
+        // url에 해당하는 post가 없을 경우
         if (findPost == null) {
             return "redirect:/blog";
         }
 
-        PostReadForm post = new PostReadForm(findPost);
-        if (findPost.getBeforePostId() != null) {
-            Post bp = postRepository.findById(findPost.getBeforePostId());
-            log.debug("bp title = {}", bp.getTitle());
-            post.setBeforePostTitle(bp.getTitle());
-            post.setBeforePostUrl(bp.getUrl());
-        }
-        if (findPost.getNextPostId() != null) {
-            Post np = postRepository.findById(findPost.getNextPostId());
-            post.setNextPostTitle(np.getTitle());
-            post.setNextPostUrl(np.getUrl());
-        }
+        PostReadForm post = postService.postToReadForm(findPost);
 
         model.addAttribute("post", post);
 
@@ -80,22 +69,7 @@ public class PostController {
     }
 
     @GetMapping("/write")
-    public String postWriteForm(@ModelAttribute PostWriteForm postWriteForm, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return "redirect:/login";
-        }
-
-        Member author = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (author == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return "redirect:/login";
-        }
-
-        if (author.getMemberRole() != MemberRole.ADMIN) {
-            return "redirect:/login";
-        }
+    public String postWriteForm(@ModelAttribute PostWriteForm postWriteForm) {
         return "blog/write";
     }
 
@@ -103,20 +77,6 @@ public class PostController {
     public String writePost(@Valid @ModelAttribute PostWriteForm postWriteForm, BindingResult bindingResult,
                             HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return "redirect:/login";
-        }
-
-        Member author = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (author == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return "redirect:/login";
-        }
-
-        if (author.getMemberRole() != MemberRole.ADMIN) {
-            return "redirect:/login";
-        }
 
         String postUrl = postWriteForm.getUrl();
         // 게시글 url 중복 검사
@@ -128,15 +88,13 @@ public class PostController {
             return "blog/write";
         }
 
-
-
         postWriteForm.setAuthor((Member) session.getAttribute(SessionConst.LOGIN_MEMBER));
         postService.write(postWriteForm);
         return "redirect:/posts/" + postUrl;
     }
 
     @GetMapping("/edit")
-    public String postEditForm(@RequestParam Long id, @ModelAttribute PostEditForm postEditForm, HttpServletResponse response) throws IOException {
+    public String postEditForm(@RequestParam Long id, @ModelAttribute PostEditForm postEditForm, HttpServletResponse response) {
         Post findPost = postRepository.findById(id);
 
         // TODO : 존재하지 않는 포스트를 수정하려는 경우
@@ -160,7 +118,6 @@ public class PostController {
         // TODO : 존재하지 않는 포스트를 수정하려는 경우
         if (findPost == null) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
-
         }
 
         String postUrl = postEditForm.getUrl();
@@ -175,21 +132,11 @@ public class PostController {
             return "redirect:/blog";
         }
 
-        //인증 및 인가 : 게시글 작성자가 맞는지 확인
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return "redirect:/login";
-        }
-        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (!member.getId().equals(findPost.getAuthor().getId())) {
-            return "redirect:/login";
-        }
-
         postRepository.update(postId, postEditForm);
         return "redirect:/posts/" + postEditForm.getUrl();
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/delete")
     public String deletePost(@ModelAttribute PostDeleteForm postDeleteForm, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         Long deletePostId = postDeleteForm.getId();
@@ -199,20 +146,8 @@ public class PostController {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        //인증 및 인가 : 게시글 작성자가 맞는지 확인
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return "redirect:/login";
-        }
-        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post deletePost = postRepository.findById(deletePostId);
-        log.info("Delete Post = {}", deletePost);
-        if (!member.getId().equals(deletePost.getAuthor().getId())) {
-            return "redirect:/login";
-        }
-
         postService.delete(deletePostId);
-        log.info("Delete Post = {}", deletePostId);
+        log.info("ID = {} Post Deleted.", deletePostId);
         return "redirect:/blog";
     }
 }

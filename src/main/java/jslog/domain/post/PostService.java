@@ -3,11 +3,16 @@ package jslog.domain.post;
 import jslog.domain.TagRepository;
 import jslog.domain.post.entity.Post;
 import jslog.domain.post.entity.Tag;
+import jslog.domain.post.form.PostReadForm;
 import jslog.domain.post.form.PostWriteForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -16,6 +21,21 @@ public class PostService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final PostWithTagRepository postWithTagRepository;
+
+    public PostReadForm postToReadForm(Post post) {
+        PostReadForm readForm = post.toReadForm();
+        if (post.getBeforePostId() != null) {
+            Post bp = postRepository.findById(post.getBeforePostId());
+            readForm.setBeforePostTitle(bp.getTitle());
+            readForm.setBeforePostUrl(bp.getUrl());
+        }
+        if (post.getNextPostId() != null) {
+            Post np = postRepository.findById(post.getNextPostId());
+            readForm.setNextPostTitle(np.getTitle());
+            readForm.setNextPostUrl(np.getUrl());
+        }
+        return readForm;
+    }
 
     @Transactional
     public Long write(PostWriteForm form) {
@@ -37,6 +57,15 @@ public class PostService {
             postWithTagRepository.save(post, tag);
         }
         return post.getId();
+    }
+
+    private List<String> getParsedTags(String tags) {
+        List<String> result = new ArrayList<>();
+        String[] tagList = tags.split(",");
+        for (String tagName : tagList) {
+            result.add(tagName.trim());
+        }
+        return result;
     }
 
     @Transactional

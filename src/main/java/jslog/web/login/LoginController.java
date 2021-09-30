@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,7 +26,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginForm form, HttpServletRequest request) {
+    public String login(@ModelAttribute LoginForm form, @RequestParam(required = false) String redirectURL, HttpServletRequest request) {
         Member loginMember = loginService.login(form.getEmail(), form.getPassword());
         log.info("login member = {}", loginMember);
 
@@ -36,7 +37,8 @@ public class LoginController {
         //로그인 성공
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-        return "redirect:/";
+        if (redirectURL == null) return "redirect:/";
+        return "redirect:" + redirectURL;
     }
 
     @PostMapping("/logout")
