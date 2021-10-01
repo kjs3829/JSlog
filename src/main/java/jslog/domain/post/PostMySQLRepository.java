@@ -95,6 +95,7 @@ public class PostMySQLRepository implements PostRepository{
     public Long getBeforePostId() {
         List resultList = em.createQuery("select p from Post p order by p.createdDate desc")
                 .setMaxResults(1).getResultList();
+        if (resultList.size() == 0) return null;
         return ((Post) resultList.get(0)).getId();
     }
 }

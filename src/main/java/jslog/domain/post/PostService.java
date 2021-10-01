@@ -48,7 +48,7 @@ public class PostService {
                 .setBeforePostId(beforePageId)
                 .build();
         postRepository.save(post);
-        setBeforePostNext(post.getId(), beforePageId);
+        if (beforePageId != null) setBeforePostNext(post.getId(), beforePageId);
         String tags = form.getTags();
         String[] tagList = tags.split(",");
         for (String tagName : tagList) {
