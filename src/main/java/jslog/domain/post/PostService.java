@@ -9,10 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -40,32 +36,24 @@ public class PostService {
     @Transactional
     public Long write(PostWriteForm form) {
         Long beforePageId = postRepository.getBeforePostId();
-        Post post = new Post.Builder().setAuthor(form.getAuthor())
-                .setContent(form.getContent())
-                .setTitle(form.getTitle())
-                .setUrl(form.getUrl())
-                .setPreview(form.getPreview())
-                .setBeforePostId(beforePageId)
+        Post post = Post.builder().author(form.getAuthor())
+                .content(form.getContent())
+                .title(form.getTitle())
+                .url(form.getUrl())
+                .preview(form.getPreview())
+                .beforePostId(beforePageId)
                 .build();
-        postRepository.save(post);
         if (beforePageId != null) setBeforePostNext(post.getId(), beforePageId);
         String tags = form.getTags();
         String[] tagList = tags.split(",");
         for (String tagName : tagList) {
             Tag tag = new Tag(tagName.trim());
-            tagRepository.save(tag);
-            postWithTagRepository.save(post, tag);
+            Tag findTag = tagRepository.findByName(tag.getName());
+            if (findTag == null) {
+                postWithTagRepository.save(post, tag);
+            } else postWithTagRepository.save(post, findTag);
         }
         return post.getId();
-    }
-
-    private List<String> getParsedTags(String tags) {
-        List<String> result = new ArrayList<>();
-        String[] tagList = tags.split(",");
-        for (String tagName : tagList) {
-            result.add(tagName.trim());
-        }
-        return result;
     }
 
     @Transactional
@@ -83,8 +71,7 @@ public class PostService {
             if (findPost.getBeforePostId() != null) np.setBeforePostId(findPost.getBeforePostId());
             else np.setBeforePostId(null);
         }
-
-        postRepository.delete(deletePostId);
+        postWithTagRepository.delete(deletePostId);
     }
 
     @Transactional

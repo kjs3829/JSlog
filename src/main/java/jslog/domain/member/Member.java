@@ -19,6 +19,7 @@ public class Member {
     private String email;
     private String password;
     private String nickname;
+    @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
     @OneToMany(mappedBy = "author")

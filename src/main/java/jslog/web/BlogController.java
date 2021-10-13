@@ -51,7 +51,7 @@ public class BlogController {
 
     @GetMapping("/{tag}")
     public String tagHome(@PathVariable(name = "tag") String tag, Model model) {
-        List<Post> posts = tagRepository.findByTag(tag);
+        List<Post> posts = tagRepository.findPostByTag(tag);
         List<PostSelectForm> selectForms = new ArrayList<>();
         for (Post post : posts) {
             selectForms.add(post.toSelectForm());

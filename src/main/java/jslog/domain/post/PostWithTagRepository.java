@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -21,5 +22,14 @@ public class PostWithTagRepository {
         postWithTag.setTag(tag);
         em.persist(postWithTag);
         return postWithTag.getId();
+    }
+
+    public void delete(Long postId) {
+        Post post = em.find(Post.class, postId);
+        List postWithTags = em.createQuery("select pt from PostWithTag pt where pt.post=:post")
+                .setParameter("post", post).getResultList();
+        for (Object postWithTag : postWithTags) {
+            em.remove(postWithTag);
+        }
     }
 }

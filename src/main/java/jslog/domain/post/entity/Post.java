@@ -7,6 +7,7 @@ import jslog.domain.post.form.PostEditForm;
 import jslog.domain.post.form.PostReadForm;
 import jslog.domain.post.form.PostSelectForm;
 import jslog.domain.post.form.PostWriteForm;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -28,7 +29,7 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "author_id")
     private Member author;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post")
     private List<PostWithTag> postWithTags = new ArrayList<>();
 
     private String title;
@@ -38,15 +39,15 @@ public class Post extends BaseTimeEntity {
     private Long beforePostId;
     private Long nextPostId;
 
-    public Post(Builder builder) {
-        this.id = builder.id;
-        this.author = builder.author;
-        this.title = builder.title;
-        this.content = builder.content;
-        this.url = builder.url;
-        this.preview = builder.preview;
-        this.beforePostId = builder.beforePostId;
-        this.nextPostId = builder.nextPostId;
+    @Builder
+    public Post (Long id, Member author, String title, String content, String url, String preview, Long beforePostId) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+        this.preview = preview;
+        this.beforePostId = beforePostId;
     }
 
     public Post(PostWriteForm postWriteForm) {
@@ -84,62 +85,6 @@ public class Post extends BaseTimeEntity {
             }
         }
         return tags;
-    }
-
-    public static class Builder {
-        private Long id;
-        private Member author;
-        private String title;
-        private String content;
-        private String url;
-        private String preview;
-        private Long beforePostId;
-        private Long nextPostId;
-
-        public Builder setAuthor(Member author) {
-            this.author = author;
-            return this;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder setContent(String content) {
-            this.content = content;
-            return this;
-        }
-
-        public Builder setUrl(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setPreview(String preview) {
-            this.preview = preview;
-            return this;
-        }
-
-        public Builder setBeforePostId(Long beforePostId) {
-            this.beforePostId = beforePostId;
-            return this;
-        }
-
-        public Builder setNextPostId(Long nextPostId) {
-            this.nextPostId = nextPostId;
-            return this;
-        }
-
-        public Post build() {
-            return new Post(this);
-        }
-
     }
 
     public void setBeforePostId(Long beforePostId) {

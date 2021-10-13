@@ -10,11 +10,11 @@ public class PostWithTag {
     @Column(name = "post_with_tag_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 

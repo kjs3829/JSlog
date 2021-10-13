@@ -24,8 +24,16 @@ public class TagRepository {
         return em.createQuery("SELECT t FROM Tag t").getResultList();
     }
 
-    public List<Post> findByTag(String name) {
+    public List<Post> findPostByTag(String name) {
         return em.createQuery("SELECT t.post FROM PostWithTag t WHERE t.tag.name = :name")
                 .setParameter("name", name).getResultList();
+    }
+
+    public Tag findByName(String name) {
+        List result =  em.createQuery("select t from Tag t where t.name =: name", Tag.class)
+                .setParameter("name", name)
+                .getResultList();
+        if (result.isEmpty()) return null;
+        return (Tag) result.get(0);
     }
 }
