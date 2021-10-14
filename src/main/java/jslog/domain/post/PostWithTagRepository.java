@@ -26,9 +26,9 @@ public class PostWithTagRepository {
 
     public void delete(Long postId) {
         Post post = em.find(Post.class, postId);
-        List postWithTags = em.createQuery("select pt from PostWithTag pt where pt.post=:post")
+        List<PostWithTag> postWithTags = em.createQuery("select pt from PostWithTag pt where pt.post=:post", PostWithTag.class)
                 .setParameter("post", post).getResultList();
-        for (Object postWithTag : postWithTags) {
+        for (PostWithTag postWithTag : postWithTags) {
             em.remove(postWithTag);
         }
     }

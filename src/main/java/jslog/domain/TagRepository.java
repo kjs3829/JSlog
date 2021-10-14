@@ -21,19 +21,19 @@ public class TagRepository {
     }
 
     public List<Tag> findAll() {
-        return em.createQuery("SELECT t FROM Tag t").getResultList();
+        return em.createQuery("SELECT t FROM Tag t", Tag.class).getResultList();
     }
 
     public List<Post> findPostByTag(String name) {
-        return em.createQuery("SELECT t.post FROM PostWithTag t WHERE t.tag.name = :name")
+        return em.createQuery("SELECT p FROM PostWithTag pt JOIN pt.post p WHERE pt.tag.name = :name", Post.class)
                 .setParameter("name", name).getResultList();
     }
 
     public Tag findByName(String name) {
-        List result =  em.createQuery("select t from Tag t where t.name =: name", Tag.class)
+        List<Tag> result =  em.createQuery("select t from Tag t where t.name =: name", Tag.class)
                 .setParameter("name", name)
                 .getResultList();
         if (result.isEmpty()) return null;
-        return (Tag) result.get(0);
+        return result.get(0);
     }
 }

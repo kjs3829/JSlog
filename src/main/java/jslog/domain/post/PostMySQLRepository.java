@@ -19,7 +19,7 @@ public class PostMySQLRepository implements PostRepository{
 
     @Override
     public List<Post> findAll() {
-        return em.createQuery("select p from Post p").getResultList();
+        return em.createQuery("select p from Post p", Post.class).getResultList();
     }
 
     @Override
@@ -31,13 +31,13 @@ public class PostMySQLRepository implements PostRepository{
 
     @Override
     public Post findByUrl(String url) {
-        List result = em.createQuery("select p from Post p where p.url = :url")
+        List<Post> result = em.createQuery("select p from Post p where p.url = :url", Post.class)
                 .setParameter("url", url).getResultList();
         log.info("FindByUrl Post = {}", result);
         if (result.isEmpty()) {
             return null;
         }
-        return (Post) result.get(0);
+        return result.get(0);
     }
 
     @Override
@@ -78,24 +78,23 @@ public class PostMySQLRepository implements PostRepository{
             return null;
         }
         log.info("page = {}", page);
-        List<Post> resultList = em.createQuery("select p from Post p order by p.id desc")
+        return em.createQuery("select p from Post p order by p.id desc", Post.class)
                 .setFirstResult((page - 1) * 4)
                 .setMaxResults(page * 4).getResultList();
-        return resultList;
     }
 
     @Override
     public int getMaxPage() {
-        Long singleResult = (Long) em.createQuery("select count(p) from Post p")
+        Long singleResult = em.createQuery("select count(p) from Post p", Long.class)
                 .getSingleResult();
         return singleResult.intValue() / 5 + 1;
     }
 
     @Override
     public Long getBeforePostId() {
-        List resultList = em.createQuery("select p from Post p order by p.createdDate desc")
+        List<Post> resultList = em.createQuery("select p from Post p order by p.createdDate desc", Post.class)
                 .setMaxResults(1).getResultList();
         if (resultList.size() == 0) return null;
-        return ((Post) resultList.get(0)).getId();
+        return resultList.get(0).getId();
     }
 }
