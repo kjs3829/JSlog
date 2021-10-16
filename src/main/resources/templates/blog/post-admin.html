@@ -10,7 +10,7 @@
 
     <title th:text="'JSLog - ' + ${post.title}">Post</title>
 
-    <link th:insert="/common/csss.html">
+    <link th:insert="common/csss.html">
     <style>
         .hoUhWW {
 			width: 32px;
@@ -44,7 +44,7 @@
 <body>
 <input type="text" id="getContent" th:value="${post.content}" hidden>
 <!-- Navigation -->
-<nav th:insert="/common/navigation.html"></nav>
+<nav th:insert="common/navigation.html"></nav>
 
 <div class="main-wrapper ">
     <section class="section blog-wrap">
@@ -67,7 +67,7 @@
                                     <!-- author, created_date, edit_button, delete_button -->
                                     <div class="blog-item-meta py-1 mb-2">
                                         <span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
-                                        <span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> 2021년 8월 8일</span>
+                                        <span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> <span th:text="${post.createdDate}">2021년 8월 8일</span></span>
                                         <span class="text-black text-capitalize mr-3"><a th:href="@{edit(id=${post.id})}">수정</a></span>
                                         <form class="d-inline" th:object="${postDeleteForm}" action="/posts/delete" th:method="delete">
                                             <input type="hidden" name="_method" value="delete"/>
@@ -156,7 +156,7 @@
 </div>
 
 <!-- Essential Scripts -->
-<meta th:insert="/common/scripts.html">
+<meta th:insert="common/scripts.html">
 
 </body>
 <script type="text/javascript">

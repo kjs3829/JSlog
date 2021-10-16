@@ -10,7 +10,7 @@
 
   <title th:text="'JSLog - ' + ${post.title}">Post</title>
 
-	  <link th:insert="/common/csss.html">
+	  <link th:insert="common/csss.html">
 	<style>
 		.hoUhWW {
 			width: 32px;
@@ -45,7 +45,7 @@
 
 	<input type="text" id="getContent" th:value="${post.content}" hidden>
 	<!-- Navigation -->
-	<nav th:insert="/common/navigation.html"></nav>
+	<nav th:insert="common/navigation.html"></nav>
 
 	<div class="main-wrapper ">
 		<section class="section blog-wrap">
@@ -151,7 +151,7 @@
     </div>
 
 	<!-- Essential Scripts -->
-	<meta th:insert="/common/scripts.html">
+	<meta th:insert="common/scripts.html">
 
 </body>
 <script type="text/javascript">

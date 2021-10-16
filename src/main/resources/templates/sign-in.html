@@ -13,25 +13,33 @@
     <link th:insert="common/csss.html">
 
     <style>
-    .sign-up {
+    .sign-in {
       width: 460px;
       margin: 0px auto;
       font-family: Dotum,'돋움',Helvetica,sans-serif;
     }
 
-    .sign-up label {
+    .sign-in label {
       font-weight: bolder;
     }
 
-    .sign-up-title {
+    .sign-in-title {
       padding:50px 0px 0px 0px;
       text-align:center;
     }
 
-    .btn-sign-up {
+    .btn-sign-in {
       background: #f75757;
-      color: #fff;
+      color: #191919;
       transition: all 0.2s ease;
+      border-radius: 4px;
+      width:100%
+    }
+    .btn-kakao-sign-in {
+      background: #fee500;
+      color: #191919;
+      transition: all 0.2s ease;
+      border-radius: 4px;
       width:100%
     }
   </style>
@@ -42,8 +50,8 @@
 <!-- Navigation -->
 <nav th:insert="common/navigation.html"></nav>
 
-<div class="sign-up">
-    <div class="sign-up-title">
+<div class="sign-in">
+    <div class="sign-in-title">
         <h2>로그인</h2>
     </div>
 
@@ -62,8 +70,9 @@
                             <input name="password" id="password" th:field="*{password}" type="password" class="form-control">
                         </div>
 
-                        <button class="btn btn-sign-up" name="submit" type="submit">로그인</button>
+                        <button class="btn btn-sign-in" name="submit" type="submit">로그인</button>
                     </form>
+                    <button class="btn btn-kakao-sign-in mt-3" type="button" th:onclick="'location.href=\''+@{${kakaoAuth}}+'\''">카카오 로그인</button>
                 </div>
             </div>
         </div>
@@ -73,12 +82,12 @@
 <div class="main-wrapper ">
 
     <!-- footer Start -->
-    <footer th:insert="/common/footer.html"></footer>
+    <footer th:insert="common/footer.html"></footer>
 
 </div>
 
 <!-- Essential Scripts -->
-<meta th:insert="/common/scripts.html">
+<meta th:insert="common/scripts.html">
 
 </body>
 </html>
