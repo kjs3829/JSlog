@@ -2,6 +2,7 @@ package jslog.domain.post;
 
 import jslog.domain.TagRepository;
 import jslog.domain.post.entity.Post;
+import jslog.domain.post.entity.PostWithTag;
 import jslog.domain.post.entity.Tag;
 import jslog.domain.post.form.PostReadForm;
 import jslog.domain.post.form.PostWriteForm;
@@ -43,15 +44,20 @@ public class PostService {
                 .preview(form.getPreview())
                 .beforePostId(beforePageId)
                 .build();
+        postRepository.save(post);
         if (beforePageId != null) setBeforePostNext(post.getId(), beforePageId);
-        String tags = form.getTags();
-        String[] tagList = tags.split(",");
-        for (String tagName : tagList) {
-            Tag tag = new Tag(tagName.trim());
-            Tag findTag = tagRepository.findByName(tag.getName());
-            if (findTag == null) {
-                postWithTagRepository.save(post, tag);
-            } else postWithTagRepository.save(post, findTag);
+        String tagString = form.getTags().trim();
+        if (!tagString.equals("")) {
+            String[] tags = tagString.split(",");
+            for (String tag : tags) {
+                String tagName = tag.trim();
+                Tag findTag = tagRepository.findByName(tagName);
+                if (findTag == null) {
+                    Tag newTag = new Tag(tagName);
+                    tagRepository.save(newTag);
+                    postWithTagRepository.save(new PostWithTag(post, newTag));
+                } else postWithTagRepository.save(new PostWithTag(post, findTag));
+            }
         }
         return post.getId();
     }
@@ -59,7 +65,6 @@ public class PostService {
     @Transactional
     public void delete(Long deletePostId) {
         Post findPost = postRepository.findById(deletePostId);
-
         // 이전포스트, 다음포스트 재배치
         if (findPost.getBeforePostId() != null) {
             Post bp = postRepository.findById(findPost.getBeforePostId());
@@ -72,6 +77,10 @@ public class PostService {
             else np.setBeforePostId(null);
         }
         postWithTagRepository.delete(deletePostId);
+        postRepository.delete(deletePostId);
+        for (Tag tag : findPost.getTags()) {
+            if (postWithTagRepository.isDeadTag(tag)) tagRepository.delete(tag);
+        }
     }
 
     @Transactional

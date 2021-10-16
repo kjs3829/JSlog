@@ -16,10 +16,14 @@ import java.util.List;
 public class PostWithTagRepository {
     private final EntityManager em;
 
-    public Long save(Post post, Tag tag) {
-        PostWithTag postWithTag = new PostWithTag();
-        postWithTag.setPost(post);
-        postWithTag.setTag(tag);
+    public boolean isDeadTag(Tag tag) {
+        Long tag1 = em.createQuery("select count(pt) from PostWithTag pt where pt.tag=:tag", Long.class)
+                .setParameter("tag", tag)
+                .getSingleResult();
+        return tag1 == 0L;
+    }
+
+    public Long save(PostWithTag postWithTag) {
         em.persist(postWithTag);
         return postWithTag.getId();
     }

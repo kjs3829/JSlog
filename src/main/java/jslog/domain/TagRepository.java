@@ -15,8 +15,13 @@ import java.util.List;
 public class TagRepository {
     private final EntityManager em;
 
-    public int save(Tag tag) {
+    public Long save(Tag tag) {
         em.persist(tag);
+        return tag.getId();
+    }
+
+    public Long delete(Tag tag) {
+        em.remove(tag);
         return tag.getId();
     }
 
