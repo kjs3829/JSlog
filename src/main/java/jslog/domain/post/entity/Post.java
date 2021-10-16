@@ -1,6 +1,6 @@
 package jslog.domain.post.entity;
 
-import jslog.domain.member.Member;
+import jslog.domain.member.entity.Member;
 import jslog.domain.post.BaseTimeEntity;
 import jslog.domain.post.PostToString;
 import jslog.domain.post.form.PostEditForm;
@@ -25,7 +25,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Member author;
 
@@ -40,8 +40,7 @@ public class Post extends BaseTimeEntity {
     private Long nextPostId;
 
     @Builder
-    public Post (Long id, Member author, String title, String content, String url, String preview, Long beforePostId) {
-        this.id = id;
+    public Post (Member author, String title, String content, String url, String preview, Long beforePostId) {
         this.author = author;
         this.title = title;
         this.content = content;

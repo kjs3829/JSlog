@@ -1,8 +1,6 @@
 package jslog.web;
 
-import jslog.domain.MemberRepository;
-import jslog.domain.member.Member;
-import jslog.domain.member.MemberRole;
+import jslog.domain.member.entity.Member;
 import jslog.domain.post.PostRepository;
 import jslog.domain.post.PostService;
 import jslog.domain.post.entity.Post;
@@ -145,7 +143,6 @@ public class PostController {
         if (!postRepository.hasId(deletePostId)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
-
         postService.delete(deletePostId);
         log.info("ID = {} Post Deleted.", deletePostId);
         return "redirect:/blog";

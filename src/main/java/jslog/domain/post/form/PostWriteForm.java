@@ -1,6 +1,6 @@
 package jslog.domain.post.form;
 
-import jslog.domain.member.Member;
+import jslog.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

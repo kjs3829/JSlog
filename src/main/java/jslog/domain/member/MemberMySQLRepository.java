@@ -1,6 +1,6 @@
-package jslog.domain;
+package jslog.domain.member;
 
-import jslog.domain.member.Member;
+import jslog.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -36,21 +36,6 @@ public class MemberMySQLRepository implements MemberRepository{
                 .getSingleResult());
         log.info("FindByEmail Member = {}", findMember);
         return findMember;
-    }
-
-    @Override
-    public Long add(Member member) {
-        em.persist(member);
-        log.info("Add Member = {}", member.toString());
-        return member.getId();
-    }
-
-    @Override
-    public Member delete(Long id) {
-        Member member = findById(id);
-        log.info("Delete Member = {}", member);
-        em.remove(member);
-        return member;
     }
 
 }

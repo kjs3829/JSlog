@@ -1,6 +1,6 @@
 package jslog.domain.post;
 
-import jslog.domain.member.Member;
+import jslog.domain.member.entity.Member;
 import jslog.domain.post.entity.Post;
 import lombok.Data;
 

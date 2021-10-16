@@ -24,16 +24,13 @@ public class PostMySQLRepository implements PostRepository{
 
     @Override
     public Post findById(Long id) {
-        Post findPost = em.find(Post.class, id);
-        log.info("FindById Post = {}", findPost);
-        return findPost;
+        return em.find(Post.class, id);
     }
 
     @Override
     public Post findByUrl(String url) {
         List<Post> result = em.createQuery("select p from Post p where p.url = :url", Post.class)
                 .setParameter("url", url).getResultList();
-        log.info("FindByUrl Post = {}", result);
         if (result.isEmpty()) {
             return null;
         }
@@ -56,7 +53,7 @@ public class PostMySQLRepository implements PostRepository{
     @Override
     public void delete(Long id) {
         Post removePost = em.find(Post.class, id);
-        log.info("Remove Post ={}", removePost);
+        log.info("id = {} Post is Removed.", id);
         em.remove(removePost);
     }
 

@@ -1,6 +1,6 @@
 package jslog.web.interceptor;
 
-import jslog.domain.member.Member;
+import jslog.domain.member.entity.Member;
 import jslog.domain.member.MemberRole;
 import jslog.web.SessionConst;
 import org.springframework.web.servlet.HandlerInterceptor;

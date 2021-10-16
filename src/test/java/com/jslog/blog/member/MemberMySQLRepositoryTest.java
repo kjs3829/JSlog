@@ -1,19 +1,11 @@
 package com.jslog.blog.member;
 
-import jslog.domain.MemberRepository;
-import jslog.domain.member.Member;
-import jslog.domain.member.MemberRole;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
+//@SpringBootTest
 @Transactional
 public class MemberMySQLRepositoryTest {
-
+/*
     @Autowired
     private MemberRepository memberRepository;
 
@@ -71,4 +63,6 @@ public class MemberMySQLRepositoryTest {
         //then
         Assertions.assertNull(findMember);
     }
+
+ */
 }
