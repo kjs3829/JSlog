@@ -1,6 +1,7 @@
 package jslog.domain.member;
 
 import jslog.domain.member.entity.Member;
+import jslog.domain.member.form.ProfileUpdateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -37,5 +38,13 @@ public class MemberMySQLRepository implements MemberRepository{
         log.info("FindByEmail Member = {}", findMember);
         return findMember;
     }
+
+
+    public Member updateProfile(Member member, ProfileUpdateForm profileUpdateForm) {
+        Member updateMember = findById(member.getId());
+        updateMember.updateProfile(profileUpdateForm);
+        return updateMember;
+    }
+
 
 }

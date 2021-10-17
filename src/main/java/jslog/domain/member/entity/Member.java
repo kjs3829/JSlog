@@ -2,11 +2,9 @@ package jslog.domain.member.entity;
 
 import jslog.domain.member.MemberRole;
 import jslog.domain.member.MemberToString;
+import jslog.domain.member.form.ProfileUpdateForm;
 import jslog.domain.post.entity.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -25,6 +23,9 @@ public class Member {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+    @Column(name = "dtype", insertable = false, updatable = false)
+    @Setter
+    private String dtype;
 
     @OneToMany(mappedBy = "author")
     private List<Post> posts = new ArrayList<>();
@@ -39,5 +40,13 @@ public class Member {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(new MemberToString(this), ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public ProfileUpdateForm getProfileUpdateForm() {
+        return new ProfileUpdateForm(this.email, this.getNickname());
+    }
+
+    public void updateProfile(ProfileUpdateForm profileUpdateForm) {
+        this.nickname = profileUpdateForm.getNickname();
     }
 }

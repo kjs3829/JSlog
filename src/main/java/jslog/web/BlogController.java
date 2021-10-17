@@ -2,6 +2,7 @@ package jslog.web;
 
 import jslog.domain.BlogService;
 import jslog.domain.TagRepository;
+import jslog.domain.member.entity.Member;
 import jslog.domain.post.PageSelector;
 import jslog.domain.post.PostRepository;
 import jslog.domain.post.entity.Post;
@@ -11,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,10 @@ public class BlogController {
     private final TagRepository tagRepository;
 
     @GetMapping("")
-    public String blogHome(@RequestParam(required = false) Integer page, Model model) {
+    public String blogHome(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member,
+                           @RequestParam(required = false) Integer page,
+                           Model model) {
+
         if (page == null) {
             page = 1;
         }
@@ -46,11 +47,14 @@ public class BlogController {
         model.addAttribute("tags", tags);
         model.addAttribute("pageSelector", pageSelector);
         model.addAttribute("posts", posts);
+        model.addAttribute("loginMember", member);
         return "blog";
     }
 
     @GetMapping("/{tag}")
-    public String tagHome(@PathVariable(name = "tag") String tag, Model model) {
+    public String tagHome(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member,
+                          @PathVariable(name = "tag") String tag,
+                          Model model) {
         List<Post> posts = tagRepository.findPostByTag(tag);
         List<PostSelectForm> selectForms = new ArrayList<>();
         for (Post post : posts) {
@@ -61,6 +65,7 @@ public class BlogController {
         List<Tag> tags = tagRepository.findAll();
         model.addAttribute("tags", tags);
         model.addAttribute("tag", tag);
+        model.addAttribute("loginMember", member);
 
         return "blog-tag";
     }

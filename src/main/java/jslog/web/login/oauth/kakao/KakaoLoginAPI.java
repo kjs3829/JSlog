@@ -14,9 +14,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class KakaoLoginAPI {
     private final String REST_API_KEY="9b73f9c1ef9ccf7d60ad9de541112929";
-    private final String REDIRECT_URI ="http://localhost:8080/auth/kakao/callback";
 
-    public KakaoAuthToken getAuthToken(String code) {
+    public KakaoAuthToken getAuthToken(String code, String REDIRECT_URI) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type","authorization_code");
         params.add("client_id", REST_API_KEY);

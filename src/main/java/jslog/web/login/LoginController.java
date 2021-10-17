@@ -29,13 +29,16 @@ public class LoginController {
     private final LoginService loginService;
     private final MemberMySQLRepository memberMySQLRepository;
     private final KakaoLoginAPI kakaoLoginAPI;
+    private final String REDIRECT_URI ="http://localhost:8080/auth/kakao/login";
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute LoginForm loginForm, Model model) {
+    public String loginForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member,
+                            @ModelAttribute LoginForm loginForm,
+                            Model model) {
         String REST_API_KEY="9b73f9c1ef9ccf7d60ad9de541112929";
-        String REDIRECT_URI ="http://localhost:8080/auth/kakao/callback";
         String kakaoAuth = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+REST_API_KEY+"&redirect_uri="+REDIRECT_URI;
         model.addAttribute("kakaoAuth", kakaoAuth);
+        model.addAttribute("loginMember", member);
         return "sign-in";
     }
 
@@ -64,10 +67,10 @@ public class LoginController {
         return "redirect:/";
     }
 
-    @GetMapping("/auth/kakao/callback")
-    public String kakaoCallback(String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("/auth/kakao/login")
+    public String kakaoLogin(String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        KakaoAuthToken kakaoAuthToken = kakaoLoginAPI.getAuthToken(code);
+        KakaoAuthToken kakaoAuthToken = kakaoLoginAPI.getAuthToken(code, REDIRECT_URI);
         KakaoProfile kakaoProfile = kakaoLoginAPI.getProfile(kakaoAuthToken);
 
         // 서비스 회원가입이 되어있을 경우 로그인 프로세스 진행

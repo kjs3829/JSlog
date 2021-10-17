@@ -33,6 +33,7 @@ public class SignUpService {
         properties.setSigned_up(true);
         kakaoLoginAPI.updateProperty(kakaoAuthToken, properties);
         kakaoMemberRepository.add(newKakaoMember);
+        newKakaoMember.setDtype("KakaoMember"); // 최초 회원가입시 @discriminator 컬럼인 member의 dtype이 제대로 반영되지 않아 이런 방법을 채택.
         return newKakaoMember;
     }
 }

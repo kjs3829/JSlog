@@ -42,7 +42,10 @@ public class PostController {
     }
 
     @GetMapping("/{url}")
-    public String getPostByUrl(@PathVariable String url, Model model, HttpServletRequest request) {
+    public String getPostByUrl(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false)Member member,
+                               @PathVariable String url,
+                               Model model,
+                               HttpServletRequest request) {
         Post findPost = postRepository.findByUrl(url);
 
         // url에 해당하는 post가 없을 경우
@@ -53,13 +56,11 @@ public class PostController {
         PostReadForm post = postService.postToReadForm(findPost);
 
         model.addAttribute("post", post);
+        model.addAttribute("loginMember", member);
 
-        HttpSession session = request.getSession(false);
-
-        if (session != null && findPost.getAuthor().getId().equals(((Member) session.getAttribute(SessionConst.LOGIN_MEMBER)).getId())) {
+        if (member != null && findPost.getAuthor().getId().equals(member.getId())) {
             PostDeleteForm p = new PostDeleteForm(findPost.getId());
             model.addAttribute("postDeleteForm", p);
-            log.info("SinglePost post.id = {}", post.getId());
             return "blog/post-admin";
         }
         log.info("SinglePost post.id = {}", post.getId());

@@ -1,5 +1,6 @@
 package jslog.domain.member;
 
+import jslog.domain.member.entity.JslogMember;
 import jslog.domain.member.entity.KakaoMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,10 @@ import javax.persistence.EntityManager;
 @Transactional
 public class KakaoMemberRepository {
     private final EntityManager em;
+
+    public KakaoMember findById(Long id) {
+        return em.find(KakaoMember.class, id);
+    }
 
     public Long add(KakaoMember kakaoMember) {
         em.persist(kakaoMember);
