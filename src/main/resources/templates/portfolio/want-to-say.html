@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="megakit,business,company,agency,multipurpose,modern,bootstrap4">
+
+	<meta name="author" content="themefisher.com">
+
+	<title>Want To Say - 소개</title>
+
+	<link th:insert="common/csss.html">
+	<style>
+		.post_row{
+			display: -ms-flexbox;
+			display: flex;
+			-ms-flex-wrap: wrap;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px;
+			flex-direction: column;
+    		align-items: center;
+		}
+		textarea{
+			resize: none;
+		}
+		.buttons-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-webkit-justify-content:flex-end;-ms-flex-pack:end;justify-content:flex-end;}
+	</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav th:insert="common/navigation.html"></nav>
+
+<div class="main-wrapper ">
+	<section class="section blog-wrap">
+		<div class="container">
+			<div class="post_row">
+				<div class="col-lg-10">
+					<div class="row">
+						<div class="col-lg-12 mb-5">
+							<div class="single-blog-item">
+								<div class="blog-item-content bg-white p-5">
+									<!-- Content -->
+									<div id="content">
+										<p class="ml-5 mb-5 pl-5"><img src="/images/portfolio/WantToSay.jpg" alt=""></p>
+										<br>
+										<h3>1. 서비스 소개</h3>
+										<hr />
+										<p>유튜브 플랫폼의 동영상과 인터넷 영문 기사들로 영어 스피킹 연습을 할 수 있는 안드로이드 어플리케이션 입니다. 학교 팀 프로젝트로 총 3명의 팀원과 함께 진행하였습니다.</p>
+										<p>코드는 <a href="https://github.com/kjs3829/WantToSay">여기</a>에서 확인할 수 있습니다.</p>
+										<br>
+										<h3>2. 개발환경 및 기술 스택</h3>
+										<hr />
+										<p><img src="https://images.velog.io/images/jslog/post/7941cf5b-8752-4f25-9a1d-1e0c8db16ced/8%EC%A1%B0_WantToSay_%EC%BA%A1%EC%8A%A4%ED%86%A4%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EB%B0%B1%EC%97%85.jpg" alt="" /></p>
+										<br>
+										<h3>3. 개발한 핵심 기능들</h3>
+										<hr />
+										<p><img src="https://images.velog.io/images/jslog/post/b1ed3590-ce9d-4c71-9783-82ebc31fea6f/8%EC%A1%B0_WantToSay_%EC%BA%A1%EC%8A%A4%ED%86%A4%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EB%B0%B1%EC%97%85%20(1).jpg" alt="" /></p>
+										<p><img src="https://images.velog.io/images/jslog/post/d13ebbf8-ab93-4c83-a670-94efb0f7eac6/8%EC%A1%B0_WantToSay_%EC%BA%A1%EC%8A%A4%ED%86%A4%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EB%B0%B1%EC%97%85%20(3).jpg" alt="" /></p>
+										<p><img src="https://images.velog.io/images/jslog/post/5f2f3fdd-2170-4726-9831-db5199f84c7c/8%EC%A1%B0_WantToSay_%EC%BA%A1%EC%8A%A4%ED%86%A4%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EB%B0%B1%EC%97%85%20(4).jpg" alt="" /></p>
+										<br>
+										<h3>4. 마무리</h3>
+										<hr />
+										<p>저의 첫 팀프로젝트이자 첫 안드로이드 프로젝트입니다.
+											개발 당시에는 기능들이 얼추 동작하였지만 컨트롤러,모델,뷰,로직이 하나의 클래스안에서 얽혀있으며 액티비티 생애주기를 고려하지 않은 설계와 명확하지 않은 분업으로 인하여 해당 프로젝트는 더이상 유지보수가 불가능한 수준까지 도달하였습니다.
+											더군다나 유튜브 API, cafe24의 서버 호스팅 기간이 만료되어 더이상 실행조차 되지 않는 프로젝트가 되어버렸습니다.
+											그러나 이런 경험 덕분에 디자인 패턴의 중요성, 원활한 유지보수를 위한 리팩토링 및 클린코드의 중요성 등 개발할때 하지 말아야 할 것들에 대해서 많이 깨닫게 되었습니다.</p>
+
+										<!-- Content End -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- footer-->
+	<footer th:insert="common/footer.html"></footer>
+
+</div>
+
+<!-- Essential Scripts -->
+<meta th:insert="common/scripts.html">
+
+</body>
+</html>

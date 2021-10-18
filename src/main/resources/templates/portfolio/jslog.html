@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="megakit,business,company,agency,multipurpose,modern,bootstrap4">
+
+	<meta name="author" content="themefisher.com">
+
+	<title>JSLOG - 소개</title>
+
+	<link th:insert="common/csss.html">
+	<style>
+		.post_row{
+			display: -ms-flexbox;
+			display: flex;
+			-ms-flex-wrap: wrap;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px;
+			flex-direction: column;
+    		align-items: center;
+		}
+		textarea{
+			resize: none;
+		}
+		.buttons-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-webkit-justify-content:flex-end;-ms-flex-pack:end;justify-content:flex-end;}
+	</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav th:insert="common/navigation.html"></nav>
+
+<div class="main-wrapper ">
+	<section class="section blog-wrap">
+		<div class="container">
+			<div class="post_row">
+				<div class="col-lg-10">
+					<div class="row">
+						<div class="col-lg-12 mb-5">
+							<div class="single-blog-item">
+								<div class="blog-item-content bg-white p-5">
+									<!-- Content -->
+									<div id="content">
+										<p class="ml-5 mb-5 pl-5"><img src="/images/portfolio/JSLog.jpg" alt=""></p>
+										<br>
+										<h3>1. 서비스 소개</h3>
+										<hr />
+										<p>개발 공부 내용을 정리, 기록 하고 공유하는 개인 블로그 입니다.</p>
+										<p>코드는 <a href="https://github.com/kjs3829/JSlog">여기</a>에서 확인할 수 있습니다.</p>
+										<br>
+										<h3>2. 기술 스택</h3>
+										<hr />
+										<p><img src="https://images.velog.io/images/jslog/post/3e442943-6d2c-4323-adeb-f74715a3daa1/%EC%BA%A1%EC%B2%98.PNG" alt="" /></p>
+										<br>
+										<h3>3. 프로젝트 아키텍쳐</h3>
+										<hr />
+										<p><img src="https://images.velog.io/images/jslog/post/831c4dd0-aeb4-4fec-ae4d-f021a55ca24c/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EB%8A%94%20%ED%94%84%EB%A0%88%EC%A0%A0%ED%85%8C%EC%9D%B4%EC%85%98.jpg" alt="" /></p>
+										<br>
+										<h3>4. EER</h3>
+										<hr />
+										<p><img src="https://images.velog.io/images/jslog/post/a386f6b4-1af5-44b2-9029-9780b8c77911/blog_EER.png" alt="" /></p>
+										<br>
+										<h3>5. 업데이트 내역</h3>
+										<hr />
+										<ul>
+											<li>0.1
+												<ul>
+													<li>개발 환경 구축</li>
+													<li>블로그 도메인 구현</li>
+												</ul>
+											</li>
+											<li>0.2
+												<ul>
+													<li>회원 가입 기능 추가</li>
+													<li>보안 없는 로그인 기능 추가</li>
+												</ul>
+											</li>
+											<li>0.3
+												<ul>
+													<li>게시글 CRUD 기능 구현</li>
+													<li>게시글 페이징 기능 구현</li>
+												</ul>
+											</li>
+											<li>0.4
+												<ul>
+													<li>게시글 태그 기능 추가</li>
+													<li>태그로 게시글 검색 기능 추가</li>
+												</ul>
+											</li>
+											<li>0.5
+												<ul>
+													<li>카카오 로그인 기능(Oauth 2.0) 추가</li>
+													<li>회원 정보 확인, 수정, 탈퇴 기능 추가</li>
+													<li>pre-release</li>
+												</ul>
+											</li>
+											<li>업데이트 예정
+												<ul>
+													<li>series 기능 추가</li>
+													<li>댓글 기능 추가</li>
+													<li>검색 기능 추가</li>
+													<li>일반 로그인 보안 기능 추가</li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+									<!-- Content End -->
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- footer-->
+	<footer th:insert="common/footer.html"></footer>
+
+</div>
+
+<!-- Essential Scripts -->
+<meta th:insert="common/scripts.html">
+
+</body>
+</html>
