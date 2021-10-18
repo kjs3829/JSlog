@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="megakit,business,company,agency,multipurpose,modern,bootstrap4">
+  
+  <meta name="author" content="themefisher.com">
+
+  <title>설정 - JSlog</title>
+
+	  <link th:insert="common/csss.html">
+
+  <style>
+    .sign-up {
+      width: 460px;
+      margin: 0px auto;
+      font-family: Dotum,'돋움',Helvetica,sans-serif;
+    }
+
+    .sign-up label {
+      font-weight: bolder;
+    }
+
+    .sign-up-title {
+      padding:50px 0px 0px 0px;
+      text-align:center;
+    }
+
+    .btn-update {
+      background: #f75757;
+      color: #fff;
+      transition: all 0.2s ease;
+      width:100%
+    }
+
+    .btn-delete {
+      background: #f10808;
+      color: #fff;
+      transition: all 0.2s ease;
+      width:100%
+    }
+  </style>
+
+</head>
+
+<body>
+	<!-- Navigation -->
+	<nav th:insert="common/navigation.html"></nav>
+
+    <div class="sign-up">
+        <div class="sign-up-title">
+            <h2>회원 정보 수정</h2>
+        </div>
+
+        <section class="contact-form-wrap section">
+            <div class="container">
+                <h3>카카오 사용자</h3>
+                <div class="content">
+                    <div class="join_content">
+                        <label for="userId">아이디</label>
+                        <div class="form-group">
+                            <input name="userId" id="userId" th:value="${profileUpdateForm.email}" type="text" class="form-control" readonly>
+                        </div>
+                        <form action="" th:action th:object="${profileUpdateForm}" method="post">
+                            <label for="userNickname">닉네임</label>
+                            <div class="form-group">
+                                <input name="userNickName" id="userNickname" th:field="*{nickname}" type="text" class="form-control">
+                            </div>
+                            <button class="btn btn-update" name="submit" type="submit">수정하기</button>
+                        </form>
+                        <button class="btn btn-delete mt-5" type="button" th:onclick="'location.href=\''+@{${kakaoAuth}}+'\''">탈퇴하기</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="main-wrapper ">
+
+        <!-- footer Start -->
+        <footer th:insert="common/footer.html"></footer>
+   
+    </div>
+
+    <!-- Essential Scripts -->
+	<meta th:insert="common/scripts.html">
+
+</body>
+  </html>
