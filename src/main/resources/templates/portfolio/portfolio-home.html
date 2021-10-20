@@ -10,13 +10,13 @@
 
   <title>Portfolio</title>
 
-	  <link th:insert="/common/csss.html">
+	  <link th:insert="common/csss.html">
 
 </head>
 
 <body>
 	<!-- Navigation -->
-	<nav th:insert="/common/navigation.html"></nav>
+	<nav th:insert="common/navigation.html"></nav>
 
 	<div class="main-wrapper ">
 		<!-- section portfolio start -->
@@ -64,18 +64,15 @@
 
 					<div class="col-lg-3 col-md-3">
 						<div class="portflio-item position-relative mb-4">
-							<img src="images/portfolio/3.jpg" alt="" class="img-fluid w-100">
-							<!--
-							<a href="images/portfolio/3.jpg" class="popup-gallery">
-								<img src="images/portfolio/3.jpg" alt="" class="img-fluid w-100">
+							<a href="/portfolio/Popcat">
+								<img src="images/portfolio/popcat.png" alt="" class="img-fluid w-100">
 
 								<i class="ti-plus overlay-item"></i>
 								<div class="portfolio-item-content">
-									<h3 class="mb-0 text-white">Project california</h3>
-									<p class="text-white-50">Web Development</p>
+									<h3 class="mb-0 text-white">Popcat</h3>
+									<p class="text-white-50">pop</p>
 								</div>
 							</a>
-							-->
 						</div>
 					</div>
 
@@ -106,7 +103,7 @@
     </div>
 
 	<!-- Essential Scripts -->
-	<meta th:insert="/common/scripts.html">
+	<meta th:insert="common/scripts.html">
 
 </body>
 </html>

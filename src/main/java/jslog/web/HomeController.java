@@ -43,4 +43,10 @@ public class HomeController {
         return "portfolio/want-to-say";
     }
 
+    @GetMapping("/portfolio/Popcat")
+    public String popcat(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false)Member member) {
+        model.addAttribute("loginMember", member);
+        return "portfolio/popcat";
+    }
+
 }
