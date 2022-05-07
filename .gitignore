@@ -1,7 +1,7 @@
-resources/application.properties
+main/resources/application-dev.properties
+main/resources/application-prod.properties
 
 ###
-
 HELP.md
 .gradle
 build/
