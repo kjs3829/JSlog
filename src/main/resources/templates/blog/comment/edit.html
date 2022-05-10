@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="megakit,business,company,agency,multipurpose,modern,bootstrap4">
+  
+  <meta name="author" content="themefisher.com">
+
+  <title>새 글 작성</title>
+
+	  <link th:insert="common/csss.html">
+
+	  <style>
+		  textarea{
+			resize: none;
+		  }
+		  .field-error {
+			 border-color: #dc3545;
+			 color: #dc3545;
+		  }
+	  </style>
+
+</head>
+
+<body>
+	<div class="container">
+		<form th:object="${commentEditForm}" th:action="@{/comments/edit(redirectUrl=${redirectUrl})}" th:method="POST">
+			<input id="commentId" th:field="*{commentId}" hidden>
+			<div class="mb-5">
+				<label for="content">내용</label>
+				<textarea class="form-control" id="content" rows="15" cols="40" placeholder="내용을 입력하세요" th:field="*{content}"></textarea>
+			</div>
+			<button class="btn btn-primary" type="submit">수정하기</button>
+		</form>
+	</div>
+</body>
+</html>

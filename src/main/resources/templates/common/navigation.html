@@ -11,10 +11,9 @@
               </button>
                 <div class="collapse navbar-collapse text-center" id="navbarsExample09">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/portfolio">Portfolio</a></li>
-                        <li th:if="${loginMember} == null" class="nav-item"><a class="nav-link" href="/login">login</a></li>
+                        <li th:if="${loginMember} != null" class="nav-item"><a class="nav-link" th:href="@{/posts/{authorId} (authorId = ${loginMember.id})}">내 블로그</a></li>
+                        <li th:if="${loginMember} != null" class="nav-item"><a class="nav-link" href="/posts/write">새 글 작성</a></li>
+                        <li th:if="${loginMember} == null" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
                         <li th:unless="${loginMember} == null" class="nav-item"><a class="nav-link" href="/members/setting" th:text="${loginMember.nickname}">member setting</a></li>
                     </ul>
                 </div>

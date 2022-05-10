@@ -68,21 +68,23 @@
 										<!-- author, created_date, edit_button, delete_button -->
 										<div class="blog-item-meta py-1 mb-2">
 											<span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
-											<span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> <span th:text="${post.createdDate}">2021년 8월 8일</span></span>
+											<span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> <span th:text="${post.createdDate}">게시글 생성 날짜</span></span>
+											<div th:if="${loginMember} != null and ${loginMember.id} == ${post.author.id}" style="display:inline">
+												<span class="text-black text-capitalize mr-3"><a th:href="@{/posts/edit(postId=${post.id})}">수정</a></span>
+												<form class="d-inline" th:action="@{/posts/delete(postId=${post.id})}" method="POST">
+													<button class="btn btn-link" type="submit">삭제</button>
+												</form>
+											</div>
 										</div>
 										<!-- author, created_date, edit_button, delete_button End-->
 
 										<!-- Tag -->
 										<div class="bg-white rounded tags mb-5">
 											<th:block th:each="tag : ${post.tags}">
-												<a th:text="${tag.name}" th:href="@{/blog/{tag} (tag=${tag.name})}"></a>
+												<a th:text="${tag.name}" th:href="@{/posts/{authorId} (authorId = ${post.author.id}, tag=${tag.name})}"></a>
 											</th:block>
 										</div>
 										<!-- Tag End-->
-
-										<!-- Content -->
-										<div id="content">
-										</div>
 										<!-- Content End -->
 
 									</div>
@@ -93,7 +95,7 @@
 
 							<div class="col-lg-12 mb-5 px-5">
 								<div class="posts-nav p-4 d-lg-flex d-md-flex justify-content-between">
-									<a th:if="${post.beforePostUrl}" class="post-prev align-items-center d-md-flex bg-gray p-3" th:href="@{/posts/{url} (url=${post.beforePostUrl})}">
+									<a th:if="${post.beforePostUrl}" class="post-prev align-items-center d-md-flex bg-gray p-3" th:href="@{/posts/{authorId}/{url} (authorId=${post.beforePostAuthorId}, url=${post.beforePostUrl})}">
 										<div class="hoUhWW mr-3">
 											←
 										</div>
@@ -108,7 +110,7 @@
 										<div class="posts-prev-item mb-4 mb-lg-0"></div>
 									</a>
 
-									<a th:if="${post.nextPostUrl}" class="post-prev align-items-center d-md-flex bg-gray p-3" th:href="@{/posts/{url} (url=${post.nextPostUrl})}">
+									<a th:if="${post.nextPostUrl}" class="post-prev align-items-center d-md-flex bg-gray p-3" th:href="@{/posts/{authorId}/{url} (authorId=${post.nextPostAuthorId}, url=${post.nextPostUrl})}">
 										<div class="posts-prev-item mb-4 mb-lg-0">
 											<span class="nav-posts-desc text-color">다음 포스트</span>
 											<h6 class="nav-posts-title t-1" th:text="${post.nextPostTitle}">
@@ -125,20 +127,49 @@
 								</div>
 							</div>
 
+							<!-- Comment -->
 							<div class="col-lg-12">
+								<!-- Comment Write -->
 								<div class="comment-area card border-0 p-5">
-									<h4 class="mb-4">0개의 댓글</h4>
+									<h4 class="mb-4" th:text="${post.commentResponse.count} + '개의 댓글'">n개의 댓글</h4>
 									<div class="col-lg-12 px-0 mb-5">
-										<form class="contact-form bg-white rounded" id="comment-form">
+										<div th:if = "${loginMember} == null">
+											<textarea disabled class="form-control mb-3" name="comment" cols="30" rows="3" placeholder="로그인이 필요합니다."></textarea>
+											<div class="buttons-wrapper">
+												<input disabled class="btn btn-primary px-3 py-2 rounded" type="submit" name="submit-contact" value="댓글 작성">
+											</div>
+										</div>
+										<form th:unless = "${loginMember} == null" class="contact-form bg-white rounded" th:action="@{/comments (redirectUrl=${post.author.id}+'/'+${post.url}, postId=${post.id}, authorId=${loginMember.id})}" method="POST">
 											<textarea class="form-control mb-3" name="comment" id="comment" cols="30" rows="3" placeholder="댓글을 작성하세요"></textarea>
 
 											<div class="buttons-wrapper">
-												<input class="btn btn-primary px-3 py-2 rounded" type="submit" name="submit-contact" id="submit_contact" value="댓글 작성">
+												<input class="btn btn-primary px-3 py-2 rounded" type="submit" value="댓글 작성">
 											</div>
 										</form>
 									</div>
 								</div>
+
+								<!-- Comment List -->
+								<th:block th:each="commentDto : ${post.commentResponse.commentDtoList}">
+									<div class="col-lg-12 col-md-6 mb-5">
+										<div class="blog-item">
+											<div class="blog-item-content bg-white p-4">
+												<a th:text="${commentDto.authorNickName}" href="#" style="font-weight:bold; font-size:15px"></a>
+												<p class="mb-4" th:text="${commentDto.createdDate}" style="font-size:14px; display:inline">댓글 생성 날짜</p>
+												<div th:if ="${loginMember} != null and ${loginMember.id} == ${commentDto.authorId}" style="font-size:14px; display:inline; margin-left: 1rem!important;">
+													<a th:href="@{/comments/edit(commentId=${commentDto.id}, redirectUrl='posts/'+${post.author.id}+'/'+${post.url})}">수정</a>
+													<form class="d-inline" th:action="@{/comments/delete(commentId=${commentDto.id}, redirectUrl='posts/'+${post.author.id}+'/'+${post.url})}" method="POST">
+														<button class="btn btn-link" type="submit">삭제</button>
+													</form>
+												</div>
+												<p class="mb-4" th:text="${commentDto.content}" style="font-size:17px; color:#212529"></p>
+											</div>
+										</div>
+									</div>
+								</th:block>
+
 							</div>
+
 						</div>
 					</div>
 				</div>
