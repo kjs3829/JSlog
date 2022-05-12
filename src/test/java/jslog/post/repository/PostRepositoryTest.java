@@ -4,6 +4,7 @@ import jslog.member.member.domain.Member;
 import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
+import jslog.post.domain.url.CustomUrl;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.postWithTag.repository.PostWithTagRepository;
 import jslog.tag.domain.Tag;
@@ -46,13 +47,13 @@ class PostRepositoryTest {
     void findByAuthorIdAndUrl() {
         //given
         Post post = Post.builder().author(testMember1)
-                .url("testUrl")
+                .customUrl(CustomUrl.create("testUrl"))
                 .title("this is test title")
                 .build();
         postRepository.save(post);
 
         //when
-        Post findPost = postRepository.findByAuthorIdAndUrl(testMember1.getId(), post.getUrl())
+        Post findPost = postRepository.findByAuthorIdAndCustomUrlUrl(testMember1.getId(), post.getStringUrl())
                 .orElseThrow(NoSuchElementException::new);
 
         //then
@@ -64,10 +65,10 @@ class PostRepositoryTest {
     @DisplayName("특정 작가의 게시글을 최신순으로 정렬하여 페이징")
     void findByAuthorIdOrderByCreatedDateDescTest() {
         //given
-        Post post1 = Post.builder().author(testMember1).url("1").build();
-        Post post2 = Post.builder().author(testMember1).url("2").build();
-        Post post3 = Post.builder().author(testMember1).url("3").build();
-        Post post4 = Post.builder().author(testMember2).url("4").build();
+        Post post1 = Post.builder().author(testMember1).customUrl(CustomUrl.create("1")).build();
+        Post post2 = Post.builder().author(testMember1).customUrl(CustomUrl.create("2")).build();
+        Post post3 = Post.builder().author(testMember1).customUrl(CustomUrl.create("3")).build();
+        Post post4 = Post.builder().author(testMember2).customUrl(CustomUrl.create("4")).build();
         postRepository.save(post1);
         postRepository.save(post2);
         postRepository.save(post3);
@@ -89,10 +90,10 @@ class PostRepositoryTest {
     @DisplayName("특정 작가의 게시글을 최신순으로 정렬하여 슬라이싱")
     void findSliceByAuthorIdOrderByCreatedDateDescTest() {
         //given
-        Post post1 = Post.builder().author(testMember1).url("1").build();
-        Post post2 = Post.builder().author(testMember1).url("2").build();
-        Post post3 = Post.builder().author(testMember1).url("3").build();
-        Post post4 = Post.builder().author(testMember2).url("4").build();
+        Post post1 = Post.builder().author(testMember1).customUrl(CustomUrl.create("1")).build();
+        Post post2 = Post.builder().author(testMember1).customUrl(CustomUrl.create("2")).build();
+        Post post3 = Post.builder().author(testMember1).customUrl(CustomUrl.create("3")).build();
+        Post post4 = Post.builder().author(testMember2).customUrl(CustomUrl.create("4")).build();
         postRepository.save(post1);
         postRepository.save(post2);
         postRepository.save(post3);
@@ -162,10 +163,10 @@ class PostRepositoryTest {
     @DisplayName("태그 이름과 작가 아이디로 조회한 결과를 최신순으로 정렬하여 페이징")
     void searchByTagAndAuthorIdOrderByCreatedDateDescTest() {
         //given
-        Post post1 = Post.builder().author(testMember1).url("1").build();
-        Post post2 = Post.builder().author(testMember1).url("2").build();
-        Post post3 = Post.builder().author(testMember1).url("3").build();
-        Post post4 = Post.builder().author(testMember2).url("4").build();
+        Post post1 = Post.builder().author(testMember1).customUrl(CustomUrl.create("1")).build();
+        Post post2 = Post.builder().author(testMember1).customUrl(CustomUrl.create("2")).build();
+        Post post3 = Post.builder().author(testMember1).customUrl(CustomUrl.create("3")).build();
+        Post post4 = Post.builder().author(testMember2).customUrl(CustomUrl.create("4")).build();
         postRepository.save(post1);
         postRepository.save(post2);
         postRepository.save(post3);

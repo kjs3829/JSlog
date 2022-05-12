@@ -6,6 +6,7 @@ import jslog.member.member.domain.Member;
 import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
+import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.postWithTag.repository.PostWithTagRepository;
@@ -60,10 +61,10 @@ public class tagRepositoryTest {
         //given
         memberRepository.save(member);
 
-        Post post1 = Post.builder().author(member).url("1").build();
-        Post post2 = Post.builder().author(member).url("2").build();
-        Post post3 = Post.builder().author(member).url("3").build();
-        Post post4 = Post.builder().author(member).url("4").build();
+        Post post1 = Post.builder().author(member).customUrl(CustomUrl.create("1")).build();
+        Post post2 = Post.builder().author(member).customUrl(CustomUrl.create("2")).build();
+        Post post3 = Post.builder().author(member).customUrl(CustomUrl.create("3")).build();
+        Post post4 = Post.builder().author(member).customUrl(CustomUrl.create("4")).build();
         postRepository.save(post1);
         postRepository.save(post2);
         postRepository.save(post3);

@@ -11,6 +11,7 @@ import jslog.member.member.repository.MemberRepository;
 import jslog.post.PostPageViewer;
 import jslog.post.SearchCondition;
 import jslog.post.domain.Post;
+import jslog.post.domain.url.CustomUrl;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.PostEditForm;
@@ -74,7 +75,7 @@ public class PostService {
     }
 
     public PostReadForm getPostReadForm(Long authorId, String url) {
-        Post post = postRepository.findByAuthorIdAndUrl(authorId, url).orElseThrow(NoSuchElementException::new);
+        Post post = postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new);
 
         List<Comment> comments = commentRepository.findByAuthorIdAndPostId(authorId, post.getId());
 
@@ -84,23 +85,24 @@ public class PostService {
         if (post.hasBeforePost()) {
             Post bp = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
             readForm.setBeforePostTitle(bp.getTitle());
-            readForm.setBeforePostUrl(bp.getUrl());
+            readForm.setBeforePostUrl(bp.getStringUrl());
             readForm.setBeforePostAuthorId(bp.getAuthor().getId());
         }
         if (post.hasNextPost()) {
             Post np = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
             readForm.setNextPostTitle(np.getTitle());
-            readForm.setNextPostUrl(np.getUrl());
+            readForm.setNextPostUrl(np.getStringUrl());
             readForm.setNextPostAuthorId(np.getAuthor().getId());
         }
 
         return readForm;
     }
 
-    // TODO : TAG Split 객체 구현
     @Transactional
     public boolean createPost(PostWriteForm form, LoginMember loginMember) {
-        if (isDuplicatedUrl(loginMember.getId(), form.getUrl())) return false;
+        CustomUrl customUrl = CustomUrl.create(form.getUrl());
+
+        if (isDuplicatedUrl(loginMember.getId(), customUrl.getUrl())) return false;
 
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
 
@@ -109,7 +111,7 @@ public class PostService {
         Post post = Post.builder().author(member)
                 .content(form.getContent())
                 .title(form.getTitle())
-                .url(form.getUrl())
+                .customUrl(customUrl)
                 .preview(form.getPreview())
                 .beforePostId(beforePost != null ? beforePost.getId() : null)
                 .build();
@@ -133,10 +135,13 @@ public class PostService {
 
     @Transactional
     public boolean updatePost(PostEditForm form, LoginMember loginMember) {
-        if (isDuplicatedUrl(loginMember.getId(), form.getUrl())) return false;
-
         Post post = postRepository.findById(form.getId()).orElseThrow(NoSuchElementException::new);
+
+        CustomUrl customUrl = CustomUrl.create(form.getUrl());
+        if (!post.getStringUrl().equals(customUrl.getUrl()) && isDuplicatedUrl(loginMember.getId(), customUrl.getUrl())) return false;
+
         checkAuthorization(loginMember, post.getAuthor().getId());
+        form.setUrl(customUrl.getUrl());
         post.edit(form);
         return true;
     }
@@ -172,8 +177,8 @@ public class PostService {
         return findPost.getAuthor().getId();
     }
 
-    private boolean isDuplicatedUrl(Long id, String postUrl) {
-        return postRepository.findByAuthorIdAndUrl(id, postUrl).orElse(null) != null;
+    private boolean isDuplicatedUrl(Long id, String customUrl) {
+        return customUrl.equals("") || postRepository.findByAuthorIdAndCustomUrlUrl(id, customUrl).orElse(null) != null;
     }
 
     private Post getRecentPost(Long authorId) {

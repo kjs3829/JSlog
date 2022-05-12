@@ -8,6 +8,8 @@ import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.PostPageViewer;
 import jslog.post.SearchCondition;
+import jslog.post.domain.Post;
+import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.PostWriteForm;
 import jslog.postWithTag.domain.PostWithTag;
@@ -43,23 +45,23 @@ class PostServiceTest {
         Member member = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
         memberRepository.save(member);
 
-        jslog.post.domain.Post post1 = jslog.post.domain.Post.builder().author(member)
-                .url("1")
+        Post post1 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("1"))
                 .build();
-        jslog.post.domain.Post post2 = jslog.post.domain.Post.builder().author(member)
-                .url("2")
+        Post post2 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("2"))
                 .build();
-        jslog.post.domain.Post post3 = jslog.post.domain.Post.builder().author(member)
-                .url("3")
+        Post post3 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("3"))
                 .build();
-        jslog.post.domain.Post post4 = jslog.post.domain.Post.builder().author(member)
-                .url("4")
+        Post post4 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("4"))
                 .build();
-        jslog.post.domain.Post post5 = jslog.post.domain.Post.builder().author(member)
-                .url("5")
+        Post post5 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("5"))
                 .build();
-        jslog.post.domain.Post post6 = jslog.post.domain.Post.builder().author(member)
-                .url("6")
+        Post post6 = jslog.post.domain.Post.builder().author(member)
+                .customUrl(CustomUrl.create("6"))
                 .build();
         Tag tag = new Tag("testTag");
         postRepository.save(post1);
@@ -121,7 +123,7 @@ class PostServiceTest {
         boolean create = postService.createPost(postWriteForm, loginMember);
 
         //then
-        jslog.post.domain.Post createdPost = postRepository.findByAuthorIdAndUrl(loginMember.getId(), postWriteForm.getUrl())
+        Post createdPost = postRepository.findByAuthorIdAndCustomUrlUrl(loginMember.getId(), postWriteForm.getUrl())
                 .orElseThrow(() -> new RuntimeException("게시글 생성 또는 게시글의 url 생성에 오류가 있습니다."));
         assertThat(create).isTrue();
         assertThat(createdPost.getTitle()).isEqualTo(postWriteForm.getTitle());

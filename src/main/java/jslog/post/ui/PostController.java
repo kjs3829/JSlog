@@ -3,6 +3,7 @@ package jslog.post.ui;
 import jslog.member.auth.ui.LoginMember;
 import jslog.post.application.PostService;
 import jslog.post.domain.Post;
+import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.PostEditForm;
 import jslog.post.ui.dto.PostWriteForm;
@@ -15,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * TODO : EditForm, DeleteForm의 id를 분리시켜 RESTful 하게 변경해야됨, postService에 edit 로직 추가해야함
@@ -62,12 +65,13 @@ public class PostController {
     // TODO : 인가 프로세스 추가해야됨
     @GetMapping("/edit")
     public String getEditPage(@RequestParam Long postId, @ModelAttribute PostEditForm postEditForm) {
+
         Post findPost = postRepository.findById(postId).orElse(null);
 
         postEditForm.setId(postId);
         postEditForm.setTitle(findPost.getTitle());
         postEditForm.setContent(findPost.getContent());
-        postEditForm.setUrl(findPost.getUrl());
+        postEditForm.setUrl(findPost.getStringUrl());
         postEditForm.setPreview(findPost.getPreview());
 
         return "blog/edit";
@@ -75,27 +79,27 @@ public class PostController {
 
     @PostMapping("")
     public String write(@Valid @ModelAttribute PostWriteForm form, BindingResult bindingResult,
-                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) {
+                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) throws UnsupportedEncodingException {
 
         if (!postService.createPost(form, loginMember)) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/write";
         }
 
-        return "redirect:/posts/"+loginMember.getId()+"/"+form.getUrl();
+        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(),"UTF-8");
     }
 
     @PostMapping("/edit")
     public String edit(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                            @Valid @ModelAttribute PostEditForm postEditForm,
-                           BindingResult bindingResult) {
+                           BindingResult bindingResult) throws UnsupportedEncodingException {
 
         if (!postService.updatePost(postEditForm,loginMember)) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/edit";
         }
 
-        return "redirect:/posts/" + loginMember.getId()+"/"+postEditForm.getUrl();
+        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(postEditForm.getUrl()).getUrl(),"UTF-8");
     }
 
     @PostMapping("/delete")

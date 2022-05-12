@@ -23,7 +23,7 @@ public class PostToString {
         int length = post.getContent().length();
         if (length >= 40) length = 40;
         this.content = post.getContent().substring(0,length);
-        this.url = post.getUrl();
+        this.url = post.getStringUrl();
         this.created_time = post.getCreatedDate();
         this.modified_time = post.getModifiedDate();
     }

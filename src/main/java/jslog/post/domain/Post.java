@@ -3,6 +3,7 @@ package jslog.post.domain;
 import jslog.comment.domain.Comment;
 import jslog.member.member.domain.Member;
 import jslog.commons.domain.BaseEntity;
+import jslog.post.domain.url.CustomUrl;
 import jslog.post.ui.dto.PostToString;
 import jslog.post.ui.dto.PostEditForm;
 import jslog.postWithTag.domain.PostWithTag;
@@ -38,7 +39,7 @@ public class Post extends BaseEntity {
 
     private String title;
     @Lob private String content;
-    private String url;
+    @Embedded private CustomUrl customUrl;
     private String preview;
     @Setter private Long beforePostId;
     @Setter private Long nextPostId;
@@ -46,11 +47,11 @@ public class Post extends BaseEntity {
     private int hit;
 
     @Builder
-    public Post (Member author, String title, String content, String url, String preview, Long beforePostId, int likeCount, int hit) {
+    public Post (Member author, String title, String content, CustomUrl customUrl, String preview, Long beforePostId, int likeCount, int hit) {
         this.author = author;
         this.title = title;
         this.content = content;
-        this.url = url;
+        this.customUrl = customUrl;
         this.preview = preview;
         this.beforePostId = beforePostId;
         this.likeCount = likeCount;
@@ -67,7 +68,7 @@ public class Post extends BaseEntity {
     public void edit(PostEditForm postEditForm) {
         this.title = postEditForm.getTitle();
         this.content = postEditForm.getContent();
-        this.url = postEditForm.getUrl();
+        this.customUrl = CustomUrl.create(postEditForm.getUrl());
         this.preview = postEditForm.getPreview();
     }
 
@@ -87,4 +88,7 @@ public class Post extends BaseEntity {
         return tags;
     }
 
+    public String getStringUrl() {
+        return customUrl.getUrl();
+    }
 }

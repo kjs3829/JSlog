@@ -1,6 +1,5 @@
 package jslog.post.ui.dto;
 
-import jslog.comment.domain.Comment;
 import jslog.comment.ui.dto.CommentDto;
 import jslog.comment.ui.dto.CommentResponse;
 import jslog.member.member.domain.Member;
@@ -38,7 +37,7 @@ public class PostReadForm {
         this.author = post.getAuthor();
         this.title = post.getTitle();
         this.content = contentsParser(post.getContent());
-        this.url = post.getUrl();
+        this.url = post.getStringUrl();
         this.tags = post.getTags();
         this.createdDate = post.getCreatedDateYYYYMMDD();
         commentResponse = CommentResponse.create(commentDtoList);
