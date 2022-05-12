@@ -13,6 +13,7 @@ public class PostEditForm {
     private Member author;
     private String title;
     private String content;
+    private String tags;
     @NotEmpty
     private String url;
     private String preview;

@@ -72,6 +72,7 @@ public class PostController {
         postEditForm.setTitle(findPost.getTitle());
         postEditForm.setContent(findPost.getContent());
         postEditForm.setUrl(findPost.getStringUrl());
+        postEditForm.setTags(findPost.getStringTags());
         postEditForm.setPreview(findPost.getPreview());
 
         return "blog/edit";

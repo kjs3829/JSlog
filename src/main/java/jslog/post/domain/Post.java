@@ -88,6 +88,17 @@ public class Post extends BaseEntity {
         return tags;
     }
 
+    public String getStringTags() {
+        StringBuilder stringTags = new StringBuilder();
+        List<Tag> tags = getTags();
+        stringTags.append(tags.get(0).getName());
+        for (int i=1; i<tags.size(); i++) {
+            stringTags.append(", ").append(tags.get(i).getName());
+        }
+
+        return stringTags.toString();
+    }
+
     public String getStringUrl() {
         return customUrl.getUrl();
     }

@@ -117,16 +117,7 @@ public class PostService {
                 .build();
         postRepository.save(post);
 
-        String tagString = form.getTags().trim();
-        if (!tagString.equals("")) {
-            String[] tags = tagString.split(",");
-            for (String tag : tags) {
-                String tagName = tag.trim();
-                Tag findOrCreateTag = tagRepository.findTagByName(tagName).orElseGet(() -> new Tag(tagName));
-                tagRepository.save(findOrCreateTag);
-                postWithTagRepository.save(new PostWithTag(post, findOrCreateTag));
-            }
-        }
+        createTags(form.getTags(), post);
 
         if (beforePost != null) beforePost.setNextPostId(post.getId());
 
@@ -143,6 +134,11 @@ public class PostService {
         checkAuthorization(loginMember, post.getAuthor().getId());
         form.setUrl(customUrl.getUrl());
         post.edit(form);
+
+        // Tag Delete (게시글에 등록된 태그 전체를 삭제하고 전부 새로 생성하는 전략)
+        for (PostWithTag pwt : post.getPostWithTags()) postWithTagRepository.delete(pwt);
+        createTags(form.getTags(), post);
+
         return true;
     }
 
@@ -191,6 +187,19 @@ public class PostService {
     private void checkAuthorization(LoginMember loginMember, Long authorizedMemberId) {
         if(!authorizedMemberId.equals(loginMember.getId()) && loginMember.getMemberRole() != MemberRole.ADMIN)
             throw new UnauthorizedException();
+    }
+
+    private void createTags(String stringTag, Post post) {
+        String tagString = stringTag.trim();
+        if (!tagString.equals("")) {
+            String[] tags = tagString.split(",");
+            for (String tag : tags) {
+                String tagName = tag.trim();
+                Tag findOrCreateTag = tagRepository.findTagByName(tagName).orElseGet(() -> new Tag(tagName));
+                tagRepository.save(findOrCreateTag);
+                postWithTagRepository.save(new PostWithTag(post, findOrCreateTag));
+            }
+        }
     }
 
 }
