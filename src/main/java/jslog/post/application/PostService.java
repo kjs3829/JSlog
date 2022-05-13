@@ -82,7 +82,7 @@ public class PostService {
     public PostReadForm getPostReadForm(Long authorId, String url, LoginMember loginMember) {
         Post post = postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new);
 
-        List<Comment> comments = commentRepository.findByAuthorIdAndPostId(authorId, post.getId());
+        List<Comment> comments = commentRepository.findByPostId(post.getId());
 
 
         //TODO : postDto로 바꿔줘야함
