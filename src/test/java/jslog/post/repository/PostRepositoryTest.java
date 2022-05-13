@@ -19,6 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -72,16 +75,14 @@ class PostRepositoryTest {
         postRepository.save(post2);
         postRepository.save(post3);
         postRepository.save(post4);
+        List<Post> posts = new ArrayList<>(Arrays.asList(post3,post2,post1));
 
         //when
         Page<Post> page = postRepository.findByAuthorIdOrderByCreatedDateDesc(testMember1.getId(),
                 PageRequest.of(0, 5));
 
         //then
-        assertThat(page.getTotalElements()).isEqualTo(3);
-        assertThat(page.getTotalPages()).isEqualTo(1);
-
-        sliceAuthorIdTest(page, testMember1.getId());
+        pagingTest(posts, page);
     }
 
     @Test
@@ -96,13 +97,14 @@ class PostRepositoryTest {
         postRepository.save(post2);
         postRepository.save(post3);
         postRepository.save(post4);
+        List<Post> posts = new ArrayList<>(Arrays.asList(post3,post2,post1));
 
         //when
         Slice<Post> slice = postRepository.findSliceByAuthorIdOrderByCreatedDateDesc(testMember1.getId(),
                 PageRequest.of(0, 5));
 
         //then
-        sliceAuthorIdTest(slice, testMember1.getId());
+        pagingTest(posts, slice);
     }
 
     @Test
@@ -117,6 +119,7 @@ class PostRepositoryTest {
         postRepository.save(post2);
         postRepository.save(post3);
         postRepository.save(post4);
+        List<Post> posts = new ArrayList<>(Arrays.asList(post4,post3,post1));
 
         //when
         Page<Post> page = postRepository.findByTitleContainingOrderByCreatedDateDesc("트페", PageRequest.of(0, 5));
@@ -125,8 +128,7 @@ class PostRepositoryTest {
         assertThat(page.getTotalPages()).isEqualTo(1);
         assertThat(page.getTotalElements()).isEqualTo(3);
 
-        for (Post post : page)
-            assertThat(post.getTitle().indexOf("트페")).isGreaterThan(-1);
+        pagingTest(posts, page);
     }
 
     @Test
@@ -141,6 +143,7 @@ class PostRepositoryTest {
         postRepository.save(post2);
         postRepository.save(post3);
         postRepository.save(post4);
+        List<Post> posts = new ArrayList<>(Arrays.asList(post3,post1));
 
         //when
         Page<Post> page = postRepository.findByAuthorIdAndTitleContainingOrderByCreatedDateDesc(testMember1.getId(),
@@ -148,10 +151,7 @@ class PostRepositoryTest {
                 PageRequest.of(0, 5));
 
         //then
-        assertThat(page.getTotalPages()).isEqualTo(1);
-        assertThat(page.getTotalElements()).isEqualTo(2);
-
-        sliceAuthorIdTest(page, testMember1.getId());
+        pagingTest(posts, page);
     }
 
     @Test
@@ -183,19 +183,22 @@ class PostRepositoryTest {
         postWithTagRepository.save(postWithTagWithTag3);
         postWithTagRepository.save(postWithTagWithTag4);
 
+        List<Post> posts = new ArrayList<>(Arrays.asList(post3,post2));
         //when
         Page<Post> page = postRepository
                 .findByAuthorIdAndPostWithTagsTagNameOrderByCreatedDateDesc(testMember1.getId(), tagName2, PageRequest.of(0, 3));
 
         //then
-        assertThat(page.getTotalPages()).isEqualTo(1);
-        assertThat(page.getTotalElements()).isEqualTo(2);
+        pagingTest(posts, page);
     }
 
-    private void sliceAuthorIdTest(Slice<Post> slice, Long authorId) {
-        for (Post post : slice)
-            assertThat(post.getAuthor().getId()).isEqualTo(authorId);
+    private void pagingTest(List<Post> posts, Slice<Post> page) {
+        int idx = 0, cnt = 0;
+        for(Post post : page) {
+            assertThat(post).isEqualTo(posts.get(idx++));
+            cnt++;
+        }
+        assertThat(cnt).isEqualTo(posts.size());
     }
-
 
 }
