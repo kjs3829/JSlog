@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -72,5 +73,28 @@ class LikesRepositoryTest {
         //then
         assertThat(findLikes.getMember()).isEqualTo(tester1);
         assertThat(findLikes.getPost()).isEqualTo(post1);
+    }
+
+    @Test
+    @DisplayName("게시글 ID로 Likes 조회 성공")
+    void findByPostId() {
+        //given
+        Member tester1 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester1", MemberRole.MEMBER);
+        Member tester2 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester2", MemberRole.MEMBER);
+        memberRepository.save(tester1);
+        memberRepository.save(tester2);
+        Post post1 = Post.builder().customUrl(CustomUrl.create("1")).author(tester1).build();
+        Post post2 = Post.builder().customUrl(CustomUrl.create("2")).author(tester1).build();
+        postRepository.save(post1);
+        postRepository.save(post2);
+        likesRepository.save(Likes.create(tester1,post1));
+        likesRepository.save(Likes.create(tester1,post2));
+        likesRepository.save(Likes.create(tester2,post1));
+
+        //when
+        List<Likes> likesList = likesRepository.findByPostId(post1.getId());
+
+        //then
+        assertThat(likesList.size()).isEqualTo(2);
     }
 }

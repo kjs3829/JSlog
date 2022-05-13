@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -82,7 +81,6 @@ class PostRepositoryTest {
         assertThat(page.getTotalElements()).isEqualTo(3);
         assertThat(page.getTotalPages()).isEqualTo(1);
 
-        sliceOrderByCreatedDateDescTest(page);
         sliceAuthorIdTest(page, testMember1.getId());
     }
 
@@ -104,7 +102,6 @@ class PostRepositoryTest {
                 PageRequest.of(0, 5));
 
         //then
-        sliceOrderByCreatedDateDescTest(slice);
         sliceAuthorIdTest(slice, testMember1.getId());
     }
 
@@ -130,7 +127,6 @@ class PostRepositoryTest {
 
         for (Post post : page)
             assertThat(post.getTitle().indexOf("트페")).isGreaterThan(-1);
-        sliceOrderByCreatedDateDescTest(page);
     }
 
     @Test
@@ -156,7 +152,6 @@ class PostRepositoryTest {
         assertThat(page.getTotalElements()).isEqualTo(2);
 
         sliceAuthorIdTest(page, testMember1.getId());
-        sliceOrderByCreatedDateDescTest(page);
     }
 
     @Test
@@ -195,14 +190,6 @@ class PostRepositoryTest {
         //then
         assertThat(page.getTotalPages()).isEqualTo(1);
         assertThat(page.getTotalElements()).isEqualTo(2);
-    }
-
-    private void sliceOrderByCreatedDateDescTest(Slice<Post> slice) {
-        LocalDateTime beforePostCreatedDate = LocalDateTime.MAX;
-        for (Post post : slice) {
-            assertThat(beforePostCreatedDate.compareTo(post.getCreatedDate()) > 0).isTrue();
-            beforePostCreatedDate = post.getCreatedDate();
-        }
     }
 
     private void sliceAuthorIdTest(Slice<Post> slice, Long authorId) {

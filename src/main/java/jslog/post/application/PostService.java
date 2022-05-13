@@ -173,6 +173,8 @@ public class PostService {
             postWithTagRepository.delete(postWithTag);
         }
 
+        likesService.deleteByPostId(findPost.getId());
+
         postRepository.delete(findPost);
 
         return findPost.getAuthor().getId();

@@ -12,7 +12,6 @@ import jslog.post.domain.Post;
 import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.LikesResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +95,7 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("좋아요 생성 성공")
-    void create() {
+    void like() {
         //given
         Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
         memberRepository.save(member);
@@ -106,7 +105,7 @@ class LikesServiceTest {
         postRepository.save(post);
 
         //when
-        Likes likes = likesService.create(loginMember.getId(), post.getId());
+        Likes likes = likesService.like(loginMember.getId(), post.getId());
 
         //then
         assertThat(likes.getMember()).isEqualTo(member);
@@ -115,7 +114,7 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("좋아요 삭제 성공")
-    void delete() {
+    void unlike() {
         //given
         Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
         memberRepository.save(member);
@@ -127,11 +126,33 @@ class LikesServiceTest {
         Likes likes = likesRepository.save(Likes.create(member, post));
 
         //when
-        Long deleteLikesId = likesService.delete(loginMember.getId(), post.getId());
+        Long deleteLikesId = likesService.unlike(loginMember.getId(), post.getId());
 
         //then
         assertThat(likes.getId()).isEqualTo(deleteLikesId);
         assertThrows(NoSuchElementException.class,() -> likesRepository.findById(deleteLikesId).orElseThrow(NoSuchElementException::new));
+    }
+
+    @Test
+    void deleteByPostId() {
+        //given
+        Member tester1 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester1", MemberRole.MEMBER);
+        Member tester2 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester2", MemberRole.MEMBER);
+        memberRepository.save(tester1);
+        memberRepository.save(tester2);
+        Post post1 = Post.builder().customUrl(CustomUrl.create("1")).author(tester1).build();
+        Post post2 = Post.builder().customUrl(CustomUrl.create("2")).author(tester1).build();
+        postRepository.save(post1);
+        postRepository.save(post2);
+        likesRepository.save(Likes.create(tester1,post1));
+        likesRepository.save(Likes.create(tester1,post2));
+        likesRepository.save(Likes.create(tester2,post1));
+
+        //when
+        likesService.deleteByPostId(post1.getId());
+
+        //then
+        assertThat(likesRepository.findByPostId(post1.getId()).size()).isEqualTo(0);
     }
 
 }
