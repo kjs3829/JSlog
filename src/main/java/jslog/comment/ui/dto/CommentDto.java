@@ -17,7 +17,6 @@ public class CommentDto {
     String content;
     String CreatedDate;
 
-    //TODO : edit, delete
     public static CommentDto create(Comment comment) {
         return new CommentDto(comment.getId(),
                 comment.getPost().getId(),

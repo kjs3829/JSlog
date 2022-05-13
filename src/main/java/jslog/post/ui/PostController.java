@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TODO : EditForm, DeleteForm의 id를 분리시켜 RESTful 하게 변경해야됨, postService에 edit 로직 추가해야함
@@ -80,7 +81,7 @@ public class PostController {
 
     @PostMapping("")
     public String write(@Valid @ModelAttribute PostWriteForm form, BindingResult bindingResult,
-                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) throws UnsupportedEncodingException {
+                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) {
 
         form.setUrl(CustomUrl.create(form.getUrl()).getUrl());
 
@@ -91,20 +92,20 @@ public class PostController {
 
         postService.createPost(form, loginMember);
 
-        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(),"UTF-8");
+        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(), StandardCharsets.UTF_8);
     }
 
     @PostMapping("/edit")
     public String edit(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                            @Valid @ModelAttribute PostEditForm postEditForm,
-                           BindingResult bindingResult) throws UnsupportedEncodingException {
+                           BindingResult bindingResult) {
 
         if (!postService.updatePost(postEditForm,loginMember)) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/edit";
         }
 
-        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(postEditForm.getUrl()).getUrl(),"UTF-8");
+        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(postEditForm.getUrl()).getUrl(), StandardCharsets.UTF_8);
     }
 
     @PostMapping("/delete")

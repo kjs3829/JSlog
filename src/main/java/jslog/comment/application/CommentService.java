@@ -2,6 +2,7 @@ package jslog.comment.application;
 
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
+import jslog.comment.ui.dto.CommentDto;
 import jslog.comment.ui.dto.CommentEditForm;
 import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
@@ -12,17 +13,24 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
+    public List<CommentDto> getCommentDtoListByPostId(Long postId) {
+        return commentRepository.findByPostId(postId).stream()
+                .map(CommentDto::create).collect(Collectors.toList());
+    }
 
+    @Transactional
     public Comment write(String comment, Long postId, Long AuthorId) {
         return commentRepository.save(
                 Comment.create(
@@ -32,6 +40,7 @@ public class CommentService {
         );
     }
 
+    @Transactional
     public void edit(CommentEditForm commentEditForm, LoginMember loginMember) {
         Comment findComment = commentRepository.findById(commentEditForm.getCommentId())
                 .orElseThrow(NoSuchElementException::new);
@@ -41,6 +50,14 @@ public class CommentService {
         findComment.edit(commentEditForm);
     }
 
+    @Transactional
+    public void deleteByPostId(Long postId) {
+        for (Comment comment : commentRepository.findByPostId(postId)) {
+            commentRepository.delete(comment);
+        }
+    }
+
+    @Transactional
     public void delete(Long commentId, LoginMember loginMember) {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
 

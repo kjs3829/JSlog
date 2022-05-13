@@ -74,8 +74,8 @@
 												<span th:text="${post.likesResponse.likes}" class="ml-1">게시글 좋아요 수</span>
 											</span>
 											<span th:unless="${loginMember} == null" style="display:inline" class="mr-5">
-												<a th:if="${post.likesResponse.liked}" th:href="@{/likes/unlike(postId=${post.id}, redirectUrl='/posts/'+${post.author.id}+'/'+${post.url})}">♥</a>
-												<a th:unless="${post.likesResponse.liked}" th:href="@{/likes/like(postId=${post.id}, redirectUrl='/posts/'+${post.author.id}+'/'+${post.url})}">♡</a>
+												<a th:if="${post.likesResponse.liked}" th:href="@{/likes/unlike(postId=${post.id}, redirectAuthorId=${post.author.id}, redirectUrl=${post.url})}">♥</a>
+												<a th:unless="${post.likesResponse.liked}" th:href="@{/likes/like(postId=${post.id}, redirectAuthorId=${post.author.id}, redirectUrl=${post.url})}">♡</a>
 												<span th:text="${post.likesResponse.likes}" class="ml-1">게시글 좋아요 수</span>
 											</span>
 											<div th:if="${loginMember} != null and ${loginMember.id} == ${post.author.id}" style="display:inline">
@@ -148,7 +148,7 @@
 												<input disabled class="btn btn-primary px-3 py-2 rounded" type="submit" name="submit-contact" value="댓글 작성">
 											</div>
 										</div>
-										<form th:unless = "${loginMember} == null" class="contact-form bg-white rounded" th:action="@{/comments (redirectUrl=${post.author.id}+'/'+${post.url}, postId=${post.id}, authorId=${loginMember.id})}" method="POST">
+										<form th:unless = "${loginMember} == null" class="contact-form bg-white rounded" th:action="@{/comments (redirectUrl=${post.url}, redirectAuthorId=${post.author.id}, postId=${post.id}, authorId=${loginMember.id})}" method="POST">
 											<textarea class="form-control mb-3" name="comment" id="comment" cols="30" rows="3" placeholder="댓글을 작성하세요"></textarea>
 
 											<div class="buttons-wrapper">
@@ -166,8 +166,8 @@
 												<a th:text="${commentDto.authorNickName}" href="#" style="font-weight:bold; font-size:15px"></a>
 												<p class="mb-4" th:text="${commentDto.createdDate}" style="font-size:14px; display:inline">댓글 생성 날짜</p>
 												<div th:if ="${loginMember} != null and ${loginMember.id} == ${commentDto.authorId}" style="font-size:14px; display:inline; margin-left: 1rem!important;">
-													<a th:href="@{/comments/edit(commentId=${commentDto.id}, redirectUrl='posts/'+${post.author.id}+'/'+${post.url})}">수정</a>
-													<form class="d-inline" th:action="@{/comments/delete(commentId=${commentDto.id}, redirectUrl='posts/'+${post.author.id}+'/'+${post.url})}" method="POST">
+													<a th:href="@{/comments/edit(commentId=${commentDto.id}, redirectUrl=${post.url}, redirectAuthorId=${post.author.id})}">수정</a>
+													<form class="d-inline" th:action="@{/comments/delete(commentId=${commentDto.id}, redirectUrl=${post.url}, redirectAuthorId=${post.author.id})}" method="POST">
 														<button class="btn btn-link" type="submit">삭제</button>
 													</form>
 												</div>

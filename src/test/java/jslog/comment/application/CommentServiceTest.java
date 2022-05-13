@@ -2,6 +2,7 @@ package jslog.comment.application;
 
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
+import jslog.comment.ui.dto.CommentDto;
 import jslog.comment.ui.dto.CommentEditForm;
 import jslog.member.auth.domain.Provider;
 import jslog.member.auth.domain.ProviderName;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -132,5 +136,48 @@ class CommentServiceTest {
         //when
         //then
         assertThrows(UnauthorizedException.class, () -> commentService.delete(comment.getId(),loginMember));
+    }
+
+    @Test
+    @DisplayName("게시글 ID로 해당 게시글에 등록되어있는 모든 댓글 삭제 성공")
+    void deleteByPostId() {
+        //given
+        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
+        memberRepository.save(member1);
+        Post post = Post.builder().title("1").build();
+        postRepository.save(post);
+        Comment comment = Comment.create(post,member1,"test comment");
+        commentRepository.save(comment);
+
+        //when
+        commentService.deleteByPostId(post.getId());
+
+        //then
+        assertThat(commentRepository.findByPostId(post.getId()).size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("게시글 ID로 CommentDto 조회 성공")
+    void getCommentDtoListByPostId() {
+        //given
+        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
+        memberRepository.save(member1);
+        Post post = Post.builder().title("1").build();
+        postRepository.save(post);
+        Comment comment1 = Comment.create(post,member1,"test comment");
+        Comment comment2 = Comment.create(post,member1,"test comment2");
+        List<Comment> comments = new ArrayList<>(Arrays.asList(comment1, comment2));
+        for (Comment comment : comments) {
+            commentRepository.save(comment);
+        }
+
+        //when
+        List<CommentDto> commentDtos = commentService.getCommentDtoListByPostId(post.getId());
+
+        //then
+        assertThat(comments.size()).isEqualTo(commentDtos.size());
+        for (int i=0; i<commentDtos.size(); i++) {
+            assertThat(commentDtos.get(i)).isEqualTo(CommentDto.create(comments.get(i)));
+        }
     }
 }

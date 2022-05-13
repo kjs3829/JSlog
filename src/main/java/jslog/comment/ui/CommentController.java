@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -22,18 +24,20 @@ public class CommentController {
 
     @PostMapping()
     public String write(@RequestParam(name = "redirectUrl") String redirectUrl,
+                        @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
                         @RequestParam(name = "postId") Long postId,
                         @RequestParam(name = "authorId") Long authorId,
                         @RequestParam(name = "comment") String comment) {
 
         commentService.write(comment,postId,authorId);
 
-        return "redirect:/posts/"+redirectUrl;
+        return "redirect:/posts/"+redirectAuthorId+"/"+ URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }
 
     @GetMapping("/edit")
     public String editPage(@RequestParam(name = "commentId") Long commentId,
                            @RequestParam(name = "redirectUrl") String redirectUrl,
+                           @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
                            @ModelAttribute CommentEditForm commentEditForm,
                            Model model) {
 
@@ -43,28 +47,31 @@ public class CommentController {
         commentEditForm.setContent(findComment.getContent());
 
         model.addAttribute("redirectUrl", redirectUrl);
-
+        model.addAttribute("redirectAuthorId", redirectAuthorId);
+        
         return "blog/comment/edit";
     }
 
     @PostMapping("/edit")
     public String edit(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                        @RequestParam(name = "redirectUrl") String redirectUrl,
+                       @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
                        @ModelAttribute CommentEditForm commentEditForm) {
 
         commentService.edit(commentEditForm, loginMember);
 
-        return "redirect:/"+redirectUrl;
+        return "redirect:/posts/"+redirectAuthorId+"/"+URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }
 
     @PostMapping("/delete")
     public String delete(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                        @RequestParam(name = "redirectUrl") String redirectUrl,
+                         @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
                        @RequestParam(name = "commentId") Long commentId) {
 
         commentService.delete(commentId, loginMember);
 
-        return "redirect:/"+redirectUrl;
+        return "redirect:/posts/"+redirectAuthorId+"/"+URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }
 
 

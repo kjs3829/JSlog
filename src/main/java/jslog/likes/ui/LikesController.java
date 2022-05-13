@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequestMapping("/likes")
@@ -24,20 +25,22 @@ public class LikesController {
     @GetMapping("/like")
     public String like(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                        @RequestParam(name = "postId") Long postId,
-                       @RequestParam(name = "redirectUrl") String redirectUrl) throws UnsupportedEncodingException {
+                       @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
+                       @RequestParam(name = "redirectUrl") String redirectUrl) {
 
         likesService.like(loginMember.getId(),postId);
 
-        return "redirect:"+URLEncoder.encode(redirectUrl, "UTF-8");
+        return "redirect:/posts/"+redirectAuthorId+"/"+URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }
 
     @GetMapping("/unlike")
     public String unlike(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                          @RequestParam(name = "postId") Long postId,
-                         @RequestParam(name = "redirectUrl") String redirectUrl) throws UnsupportedEncodingException {
+                         @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
+                         @RequestParam(name = "redirectUrl") String redirectUrl) {
 
         likesService.unlike(loginMember.getId(), postId);
-
-        return "redirect:"+URLEncoder.encode(redirectUrl, "UTF-8");
+        
+        return "redirect:/posts/"+redirectAuthorId+"/"+URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }
 }
