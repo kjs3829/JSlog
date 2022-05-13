@@ -20,9 +20,11 @@ public class PostToString {
         this.id = post.getId();
         this.author = post.getAuthor();
         this.title = post.getTitle();
-        int length = post.getContent().length();
-        if (length >= 40) length = 40;
-        this.content = post.getContent().substring(0,length);
+        if (post.getContent() != null) {
+            int length = post.getContent().length();
+            if (length >= 40) length = 40;
+            this.content = post.getContent().substring(0,length);
+        } else this.content = "";
         this.url = post.getStringUrl();
         this.created_time = post.getCreatedDate();
         this.modified_time = post.getModifiedDate();
