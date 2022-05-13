@@ -84,7 +84,7 @@ public class PostController {
 
         form.setUrl(CustomUrl.create(form.getUrl()).getUrl());
 
-        if (!postService.isDuplicatedUrl(loginMember.getId(),form.getUrl())) {
+        if (postService.isDuplicatedUrl(loginMember.getId(),form.getUrl())) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/write";
         }
