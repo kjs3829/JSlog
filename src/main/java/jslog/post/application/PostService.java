@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * TODO : TAG Split 객체 구현, edit시 원래 url로 수정이 불가능한 이슈 수정 필요
+ * TODO : TAG Split 객체 구현
  */
 
 @Slf4j
@@ -73,14 +73,28 @@ public class PostService {
         return tagRepository.getMemberTags(authorId);
     }
 
-    public PostReadForm getPostReadForm(LoginMember loginMember, Long postId) {
-        return createPostReadForm(loginMember,
-                postRepository.findById(postId).orElseThrow(NoSuchElementException::new));
-    }
 
     public PostReadForm getPostReadForm(Long authorId, String url, LoginMember loginMember) {
-        return createPostReadForm(loginMember,
-                postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new));
+        Post post = postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new);
+
+        PostReadForm readForm = new PostReadForm(post,
+                commentService.getCommentDtoListByPostId(post.getId()),
+                likesService.createLikesResponse(loginMember, post.getId()));
+
+        if (post.hasBeforePost()) {
+            Post bp = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
+            readForm.setBeforePostTitle(bp.getTitle());
+            readForm.setBeforePostUrl(bp.getStringUrl());
+            readForm.setBeforePostAuthorId(bp.getAuthor().getId());
+        }
+        if (post.hasNextPost()) {
+            Post np = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
+            readForm.setNextPostTitle(np.getTitle());
+            readForm.setNextPostUrl(np.getStringUrl());
+            readForm.setNextPostAuthorId(np.getAuthor().getId());
+        }
+
+        return readForm;
     }
 
     @Transactional
@@ -184,27 +198,6 @@ public class PostService {
                 }
             }
         }
-    }
-
-    private PostReadForm createPostReadForm(LoginMember loginMember, Post post) {
-        PostReadForm readForm = new PostReadForm(post,
-                commentService.getCommentDtoListByPostId(post.getId()),
-                likesService.createLikesResponse(loginMember, post.getId()));
-
-        if (post.hasBeforePost()) {
-            Post bp = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
-            readForm.setBeforePostTitle(bp.getTitle());
-            readForm.setBeforePostUrl(bp.getStringUrl());
-            readForm.setBeforePostAuthorId(bp.getAuthor().getId());
-        }
-        if (post.hasNextPost()) {
-            Post np = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
-            readForm.setNextPostTitle(np.getTitle());
-            readForm.setNextPostUrl(np.getStringUrl());
-            readForm.setNextPostAuthorId(np.getAuthor().getId());
-        }
-
-        return readForm;
     }
 
 }
