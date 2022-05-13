@@ -52,7 +52,7 @@ public class PostController {
                                     @PathVariable String url,
                                     Model model) {
 
-        model.addAttribute("post", postService.getPostReadForm(authorId, url));
+        model.addAttribute("post", postService.getPostReadForm(authorId, url, loginMember));
         model.addAttribute("loginMember", loginMember);
         return "blog/post";
     }
@@ -82,10 +82,14 @@ public class PostController {
     public String write(@Valid @ModelAttribute PostWriteForm form, BindingResult bindingResult,
                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) throws UnsupportedEncodingException {
 
-        if (!postService.createPost(form, loginMember)) {
+        form.setUrl(CustomUrl.create(form.getUrl()).getUrl());
+
+        if (!postService.isDuplicatedUrl(loginMember.getId(),form.getUrl())) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/write";
         }
+
+        postService.createPost(form, loginMember);
 
         return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(),"UTF-8");
     }

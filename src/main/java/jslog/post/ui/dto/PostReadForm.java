@@ -30,9 +30,10 @@ public class PostReadForm {
     private String beforePostTitle;
     private String nextPostTitle;
 
+    private LikesResponse likesResponse;
     private CommentResponse commentResponse;
 
-    public PostReadForm(Post post, List<CommentDto> commentDtoList) {
+    public PostReadForm(Post post, List<CommentDto> commentDtoList, LikesResponse likesResponse) {
         this.id = post.getId();
         this.author = post.getAuthor();
         this.title = post.getTitle();
@@ -41,6 +42,7 @@ public class PostReadForm {
         this.tags = post.getTags();
         this.createdDate = post.getCreatedDateYYYYMMDD();
         commentResponse = CommentResponse.create(commentDtoList);
+        this.likesResponse = likesResponse;
     }
 
     /**

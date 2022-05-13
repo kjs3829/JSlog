@@ -120,12 +120,11 @@ class PostServiceTest {
         LoginMember loginMember = LoginMember.createMember(tester1);
 
         //when
-        boolean create = postService.createPost(postWriteForm, loginMember);
+        postService.createPost(postWriteForm, loginMember);
 
         //then
         Post createdPost = postRepository.findByAuthorIdAndCustomUrlUrl(loginMember.getId(), postWriteForm.getUrl())
                 .orElseThrow(() -> new RuntimeException("게시글 생성 또는 게시글의 url 생성에 오류가 있습니다."));
-        assertThat(create).isTrue();
         assertThat(createdPost.getTitle()).isEqualTo(postWriteForm.getTitle());
     }
 

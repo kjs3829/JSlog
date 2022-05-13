@@ -69,10 +69,19 @@
 										<div class="blog-item-meta py-1 mb-2">
 											<span class="text-black text-capitalize mr-3"><i class="ti-pencil mr-2"></i><i th:text="${post.author.nickname}">작가</i></span>
 											<span class="text-muted text-capitalize mr-3"><i class="ti-time mr-1"></i> <span th:text="${post.createdDate}">게시글 생성 날짜</span></span>
+											<span th:if="${loginMember} == null" style="display:inline" class="mr-5">
+												<i class="ti-heart"></i>
+												<span th:text="${post.likesResponse.likes}" class="ml-1">게시글 좋아요 수</span>
+											</span>
+											<span th:unless="${loginMember} == null" style="display:inline" class="mr-5">
+												<a th:if="${post.likesResponse.liked}" th:href="@{/likes/unlike(postId=${post.id}, redirectUrl='/posts/'+${post.author.id}+'/'+${post.url})}">♥</a>
+												<a th:unless="${post.likesResponse.liked}" th:href="@{/likes/like(postId=${post.id}, redirectUrl='/posts/'+${post.author.id}+'/'+${post.url})}">♡</a>
+												<span th:text="${post.likesResponse.likes}" class="ml-1">게시글 좋아요 수</span>
+											</span>
 											<div th:if="${loginMember} != null and ${loginMember.id} == ${post.author.id}" style="display:inline">
-												<span class="text-black text-capitalize mr-3"><a th:href="@{/posts/edit(postId=${post.id})}">수정</a></span>
+												<span class="mr-2"><a th:href="@{/posts/edit(postId=${post.id})}">수정</a></span>
 												<form class="d-inline" th:action="@{/posts/delete(postId=${post.id})}" method="POST">
-													<button class="btn btn-link" type="submit">삭제</button>
+													<button class="btn" type="submit">삭제</button>
 												</form>
 											</div>
 										</div>

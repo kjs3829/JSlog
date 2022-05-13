@@ -3,6 +3,9 @@ package jslog.post.application;
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
 import jslog.comment.ui.dto.CommentDto;
+import jslog.likes.application.LikesService;
+import jslog.likes.domain.Likes;
+import jslog.likes.repository.LikesRepository;
 import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.Member;
@@ -46,6 +49,8 @@ public class PostService {
     private final TagRepository tagRepository;
     private final PostWithTagRepository postWithTagRepository;
     private final CommentRepository commentRepository;
+    private final LikesRepository likesRepository;
+    private final LikesService likesService;
 
     public PostPageViewer getPageSelector(long authorId, String q, String tag, Integer p) {
         PageRequest pr = PageRequest.of(p!=null?p-1:0, PAGE_SIZE);
@@ -74,13 +79,16 @@ public class PostService {
         return tagRepository.getMemberTags(authorId);
     }
 
-    public PostReadForm getPostReadForm(Long authorId, String url) {
+    public PostReadForm getPostReadForm(Long authorId, String url, LoginMember loginMember) {
         Post post = postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new);
 
         List<Comment> comments = commentRepository.findByAuthorIdAndPostId(authorId, post.getId());
 
+
         //TODO : postDto로 바꿔줘야함
-        PostReadForm readForm = new PostReadForm(post, comments.stream().map(CommentDto::create).collect(Collectors.toList()));
+        PostReadForm readForm = new PostReadForm(post,
+                comments.stream().map(CommentDto::create).collect(Collectors.toList()),
+                likesService.createLikesResponse(loginMember, post.getId()));
 
         if (post.hasBeforePost()) {
             Post bp = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
@@ -99,10 +107,7 @@ public class PostService {
     }
 
     @Transactional
-    public boolean createPost(PostWriteForm form, LoginMember loginMember) {
-        CustomUrl customUrl = CustomUrl.create(form.getUrl());
-
-        if (isDuplicatedUrl(loginMember.getId(), customUrl.getUrl())) return false;
+    public Post createPost(PostWriteForm form, LoginMember loginMember) {
 
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
 
@@ -111,7 +116,7 @@ public class PostService {
         Post post = Post.builder().author(member)
                 .content(form.getContent())
                 .title(form.getTitle())
-                .customUrl(customUrl)
+                .customUrl(new CustomUrl(form.getUrl()))
                 .preview(form.getPreview())
                 .beforePostId(beforePost != null ? beforePost.getId() : null)
                 .build();
@@ -121,7 +126,7 @@ public class PostService {
 
         if (beforePost != null) beforePost.setNextPostId(post.getId());
 
-        return true;
+        return post;
     }
 
     @Transactional
@@ -173,7 +178,7 @@ public class PostService {
         return findPost.getAuthor().getId();
     }
 
-    private boolean isDuplicatedUrl(Long id, String customUrl) {
+    public boolean isDuplicatedUrl(Long id, String customUrl) {
         return customUrl.equals("") || postRepository.findByAuthorIdAndCustomUrlUrl(id, customUrl).orElse(null) != null;
     }
 
@@ -190,14 +195,16 @@ public class PostService {
     }
 
     private void createTags(String stringTag, Post post) {
-        String tagString = stringTag.trim();
-        if (!tagString.equals("")) {
-            String[] tags = tagString.split(",");
-            for (String tag : tags) {
-                String tagName = tag.trim();
-                Tag findOrCreateTag = tagRepository.findTagByName(tagName).orElseGet(() -> new Tag(tagName));
-                tagRepository.save(findOrCreateTag);
-                postWithTagRepository.save(new PostWithTag(post, findOrCreateTag));
+        if (stringTag != null) {
+            String tagString = stringTag.trim();
+            if (!tagString.equals("")) {
+                String[] tags = tagString.split(",");
+                for (String tag : tags) {
+                    String tagName = tag.trim();
+                    Tag findOrCreateTag = tagRepository.findTagByName(tagName).orElseGet(() -> new Tag(tagName));
+                    tagRepository.save(findOrCreateTag);
+                    postWithTagRepository.save(new PostWithTag(post, findOrCreateTag));
+                }
             }
         }
     }
