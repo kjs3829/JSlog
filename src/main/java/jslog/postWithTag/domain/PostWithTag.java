@@ -22,7 +22,15 @@ public class PostWithTag {
     private Tag tag;
 
     public PostWithTag(Post post, Tag tag) {
-        this.post = post;
+        setPost(post);
         this.tag = tag;
+    }
+
+    private void setPost(Post post) {
+        if (this.post != null) {
+            this.post.getPostWithTags().remove(this);
+        }
+        this.post = post;
+        post.getPostWithTags().add(this);
     }
 }

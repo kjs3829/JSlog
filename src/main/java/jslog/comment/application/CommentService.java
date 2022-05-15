@@ -4,6 +4,7 @@ import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
 import jslog.comment.ui.dto.CommentDto;
 import jslog.comment.ui.dto.CommentEditForm;
+import jslog.comment.ui.dto.CommentResponse;
 import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.MemberRole;
@@ -13,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -25,9 +25,9 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    public List<CommentDto> getCommentDtoListByPostId(Long postId) {
-        return commentRepository.findByPostId(postId).stream()
-                .map(CommentDto::create).collect(Collectors.toList());
+    public CommentResponse createCommentResponse(Long postId) {
+        return CommentResponse.create(commentRepository.findByPostId(postId).stream()
+                .map(CommentDto::create).collect(Collectors.toList()));
     }
 
     @Transactional

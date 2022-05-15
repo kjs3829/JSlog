@@ -41,7 +41,7 @@ public class PostController {
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("authorId", authorId);
         model.addAttribute("memberTags", postService.getMemberTags(authorId));
-        model.addAttribute("page", postService.getPageSelector(authorId, q, tag, p));
+        model.addAttribute("page", postService.getPostPageResponse(authorId, q, tag, p));
 
         return "blog/home";
     }
@@ -52,7 +52,7 @@ public class PostController {
                                     @PathVariable String url,
                                     Model model) {
 
-        model.addAttribute("post", postService.getPostReadForm(authorId, url, loginMember));
+        model.addAttribute("post", postService.getPostReadResponse(authorId, url, loginMember));
         model.addAttribute("loginMember", loginMember);
         return "blog/post";
     }

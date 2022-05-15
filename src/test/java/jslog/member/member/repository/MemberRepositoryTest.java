@@ -21,7 +21,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("ProvideId 와 ProviderName 으로 회원 조회")
-    void findByProvideIdTest() {
+    void findByProvideIdAndProviderName() {
         //given
         Provider provider = Provider.create("TestUser", ProviderName.KAKAO);
         Member member = Member.create(provider, null, null);

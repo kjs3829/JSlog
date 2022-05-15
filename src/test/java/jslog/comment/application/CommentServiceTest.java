@@ -155,29 +155,4 @@ class CommentServiceTest {
         //then
         assertThat(commentRepository.findByPostId(post.getId()).size()).isEqualTo(0);
     }
-
-    @Test
-    @DisplayName("게시글 ID로 CommentDto 조회 성공")
-    void getCommentDtoListByPostId() {
-        //given
-        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        memberRepository.save(member1);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        Comment comment1 = Comment.create(post,member1,"test comment");
-        Comment comment2 = Comment.create(post,member1,"test comment2");
-        List<Comment> comments = new ArrayList<>(Arrays.asList(comment1, comment2));
-        for (Comment comment : comments) {
-            commentRepository.save(comment);
-        }
-
-        //when
-        List<CommentDto> commentDtos = commentService.getCommentDtoListByPostId(post.getId());
-
-        //then
-        assertThat(comments.size()).isEqualTo(commentDtos.size());
-        for (int i=0; i<commentDtos.size(); i++) {
-            assertThat(commentDtos.get(i)).isEqualTo(CommentDto.create(comments.get(i)));
-        }
-    }
 }

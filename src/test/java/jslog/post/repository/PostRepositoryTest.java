@@ -45,9 +45,12 @@ class PostRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글 작가 ID와 url로 게시글 조회")
-    void findByAuthorIdAndUrl() {
+    @DisplayName("게시글 작가 ID와 게시글의 url로 게시글 조회")
+    void findByAuthorIdAndCustomUrlUrl() {
         //given
+        Member testMember1 = Member.create(null, "tester1", MemberRole.MEMBER);
+        memberRepository.save(testMember1);
+
         Post post = Post.builder().author(testMember1)
                 .customUrl(CustomUrl.create("testUrl"))
                 .title("this is test title")
@@ -59,12 +62,11 @@ class PostRepositoryTest {
                 .orElseThrow(NoSuchElementException::new);
 
         //then
-        assertThat(findPost.getTitle()).isEqualTo(post.getTitle());
-        assertThat(findPost.getAuthor()).isEqualTo(testMember1);
+        assertThat(findPost).isEqualTo(post);
     }
 
     @Test
-    @DisplayName("특정 작가의 게시글을 최신순으로 정렬하여 페이징")
+    @DisplayName("특정 작가의 게시글을 최신순으로 정렬하여 페이징한 결과를 조회")
     void findByAuthorIdOrderByCreatedDateDescTest() {
         //given
         Post post1 = Post.builder().author(testMember1).customUrl(CustomUrl.create("1")).build();

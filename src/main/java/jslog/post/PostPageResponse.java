@@ -1,18 +1,18 @@
 package jslog.post;
 
-import jslog.commons.PageViewer;
+import jslog.commons.PageResponse;
 import jslog.post.domain.Post;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 @Getter
-public class PostPageViewer extends PageViewer {
+public class PostPageResponse extends PageResponse {
     SearchCondition searchCondition;
     String tag;
     String q;
 
-    public PostPageViewer(SearchCondition searchCondition, String q, String tag, Page<Post> page, int pageSize) {
-        super(page, pageSize);
+    public PostPageResponse(SearchCondition searchCondition, String q, String tag, Page<Post> page) {
+        super(page);
         this.q = q;
         this.tag = tag;
         this.searchCondition = searchCondition;

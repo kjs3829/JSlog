@@ -14,8 +14,6 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post,Long> {
 
-    Optional<Post> findById(Long id);
-
     Optional<Post> findByAuthorIdAndCustomUrlUrl(Long authorId, String url);
 
     Slice<Post> findSliceByAuthorIdOrderByCreatedDateDesc(Long authorId, Pageable pageable);

@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -89,7 +92,7 @@ public class Post extends BaseEntity {
     public String getStringTags() {
         StringBuilder stringTags = new StringBuilder();
         List<Tag> tags = getTags();
-        stringTags.append(tags.get(0).getName());
+        if (!tags.isEmpty()) stringTags.append(tags.get(0).getName());
         for (int i=1; i<tags.size(); i++) {
             stringTags.append(", ").append(tags.get(i).getName());
         }
@@ -99,5 +102,17 @@ public class Post extends BaseEntity {
 
     public String getStringUrl() {
         return customUrl.getUrl();
+    }
+
+    /**
+     * markdown으로 작성된 게시글의 내용을 html 형식으로 바꾼다.
+     */
+    public String getRenderedContent() {
+        if (this.content == null) return "";
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(this.content);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+
+        return renderer.render(document);
     }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class PageViewer {
+public class PageResponse {
     int pageSize;
     int startPage;
     int endPage;
@@ -18,8 +18,8 @@ public class PageViewer {
     List posts;
     List<Integer> pageNumbers;
 
-    public PageViewer(Page page, int pageSize) {
-        this.pageSize = pageSize;
+    public PageResponse(Page page) {
+        this.pageSize = page.getSize();
         startPage = Math.max(page.getNumber() - (this.pageSize -1)/2 + 1, 1);
         endPage = Math.min(startPage + pageSize - 1,page.getTotalPages());
         currentPage = page.getNumber()+1;

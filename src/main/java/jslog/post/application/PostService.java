@@ -7,18 +7,16 @@ import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.Member;
 import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
-import jslog.post.PostPageViewer;
+import jslog.post.PostPageResponse;
 import jslog.post.SearchCondition;
 import jslog.post.domain.Post;
 import jslog.post.domain.url.CustomUrl;
+import jslog.post.ui.dto.*;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.post.repository.PostRepository;
-import jslog.post.ui.dto.PostEditForm;
 import jslog.postWithTag.repository.PostWithTagRepository;
 import jslog.tag.MemberTag;
 import jslog.tag.domain.Tag;
-import jslog.post.ui.dto.PostReadForm;
-import jslog.post.ui.dto.PostWriteForm;
 import jslog.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,55 +44,52 @@ public class PostService {
     private final CommentService commentService;
     private final LikesService likesService;
 
-    public PostPageViewer getPageSelector(long authorId, String q, String tag, Integer p) {
+    public PostPageResponse getPostPageResponse(long authorId, String q, String tag, Integer p) {
         PageRequest pr = PageRequest.of(p!=null?p-1:0, PAGE_SIZE);
+
         if (q != null && !q.equals("")) {
-            return new PostPageViewer(SearchCondition.q,
+            return new PostPageResponse(SearchCondition.q,
                     q,
                     null,
-                    postRepository.findByAuthorIdAndTitleContainingOrderByCreatedDateDesc(authorId,q, pr),
-                    PAGE_SIZE);
+                    postRepository.findByAuthorIdAndTitleContainingOrderByCreatedDateDesc(authorId,q, pr));
         }
         else if (tag != null && !tag.equals("")) {
-            return new PostPageViewer(SearchCondition.tag,
+            return new PostPageResponse(SearchCondition.tag,
                     null,
                     tag,
-                    postRepository.findByAuthorIdAndPostWithTagsTagNameOrderByCreatedDateDesc(authorId, tag, pr),
-                    PAGE_SIZE);
+                    postRepository.findByAuthorIdAndPostWithTagsTagNameOrderByCreatedDateDesc(authorId, tag, pr));
         }
-        return new PostPageViewer(SearchCondition.none,
+        return new PostPageResponse(SearchCondition.none,
                 null,
                 null,
-                postRepository.findByAuthorIdOrderByCreatedDateDesc(authorId, pr),
-                PAGE_SIZE);
+                postRepository.findByAuthorIdOrderByCreatedDateDesc(authorId, pr));
     }
 
     public List<MemberTag> getMemberTags(Long authorId) {
-        return tagRepository.getMemberTags(authorId);
+        return postWithTagRepository.getMemberTags(authorId);
     }
 
 
-    public PostReadForm getPostReadForm(Long authorId, String url, LoginMember loginMember) {
+    public PostReadResponse getPostReadResponse(Long authorId, String url, LoginMember loginMember) {
         Post post = postRepository.findByAuthorIdAndCustomUrlUrl(authorId, url).orElseThrow(NoSuchElementException::new);
 
-        PostReadForm readForm = new PostReadForm(post,
-                commentService.getCommentDtoListByPostId(post.getId()),
-                likesService.createLikesResponse(loginMember, post.getId()));
+        PrevNextPostResponse prevPostResponse = null, nextPostResponse = null;
 
         if (post.hasBeforePost()) {
-            Post bp = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
-            readForm.setBeforePostTitle(bp.getTitle());
-            readForm.setBeforePostUrl(bp.getStringUrl());
-            readForm.setBeforePostAuthorId(bp.getAuthor().getId());
+            Post prevPost = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
+            prevPostResponse = PrevNextPostResponse.create(PostDto.create(prevPost));
         }
         if (post.hasNextPost()) {
-            Post np = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
-            readForm.setNextPostTitle(np.getTitle());
-            readForm.setNextPostUrl(np.getStringUrl());
-            readForm.setNextPostAuthorId(np.getAuthor().getId());
+            Post nextPost = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
+            nextPostResponse = PrevNextPostResponse.create(PostDto.create(nextPost));
         }
 
-        return readForm;
+        return new PostReadResponse(PostResponse.create(PostDto.create(post)),
+                prevPostResponse,
+                nextPostResponse,
+                commentService.createCommentResponse(post.getId()),
+                likesService.createLikesResponse(loginMember, post.getId())
+        );
     }
 
     @Transactional

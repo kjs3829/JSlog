@@ -1,12 +1,9 @@
 package jslog.tag.domain;
 
-import jslog.postWithTag.domain.PostWithTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -17,9 +14,6 @@ public class Tag {
 
     @Column(name = "tag_name")
     private String name;
-
-    @OneToMany(mappedBy = "tag")
-    private List<PostWithTag> postWithTags = new ArrayList<>();
 
     public Tag(String name) {
         this.name = name;
