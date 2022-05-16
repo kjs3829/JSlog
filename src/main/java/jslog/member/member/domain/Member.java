@@ -31,12 +31,6 @@ public class Member extends BaseEntity {
         return new Member(null, provider, nickname, memberRole);
     }
 
-    // Member의 posts는 로그에서 제거
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(new MemberToString(this), ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
     public ProfileUpdateForm getProfileUpdateForm() {
         return new ProfileUpdateForm(this.getNickname());
     }

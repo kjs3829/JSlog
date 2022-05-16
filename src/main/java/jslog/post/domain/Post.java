@@ -4,7 +4,6 @@ import jslog.comment.domain.Comment;
 import jslog.member.member.domain.Member;
 import jslog.commons.domain.BaseEntity;
 import jslog.post.domain.url.CustomUrl;
-import jslog.post.ui.dto.PostToString;
 import jslog.post.ui.dto.PostEditRequest;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.tag.domain.Tag;
@@ -12,8 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -71,12 +68,6 @@ public class Post extends BaseEntity {
         this.content = postEditRequest.getContent();
         this.customUrl = CustomUrl.create(postEditRequest.getUrl());
         this.preview = postEditRequest.getPreview();
-    }
-
-    // 로그에 찍히는 content 길이 최대 40글자
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(new PostToString(this), ToStringStyle.MULTI_LINE_STYLE);
     }
 
     public List<Tag> getTags() {
