@@ -1,10 +1,9 @@
 package jslog.comment.domain;
 
-import jslog.comment.ui.dto.CommentEditForm;
+import jslog.comment.ui.dto.CommentEditRequest;
 import jslog.commons.domain.BaseEntity;
 import jslog.member.member.domain.Member;
 import jslog.post.domain.Post;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,8 +30,8 @@ public class Comment extends BaseEntity {
         return new Comment(post, author, content);
     }
 
-    public void edit(CommentEditForm commentEditForm) {
-        content = commentEditForm.getContent();
+    public void edit(CommentEditRequest commentEditRequest) {
+        content = commentEditRequest.getContent();
     }
 
     private Comment(Post post, Member author, String content) {

@@ -5,7 +5,7 @@ import jslog.member.member.domain.Member;
 import jslog.commons.domain.BaseEntity;
 import jslog.post.domain.url.CustomUrl;
 import jslog.post.ui.dto.PostToString;
-import jslog.post.ui.dto.PostEditForm;
+import jslog.post.ui.dto.PostEditRequest;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.tag.domain.Tag;
 import lombok.Builder;
@@ -66,11 +66,11 @@ public class Post extends BaseEntity {
         return nextPostId != null;
     }
 
-    public void edit(PostEditForm postEditForm) {
-        this.title = postEditForm.getTitle();
-        this.content = postEditForm.getContent();
-        this.customUrl = CustomUrl.create(postEditForm.getUrl());
-        this.preview = postEditForm.getPreview();
+    public void edit(PostEditRequest postEditRequest) {
+        this.title = postEditRequest.getTitle();
+        this.content = postEditRequest.getContent();
+        this.customUrl = CustomUrl.create(postEditRequest.getUrl());
+        this.preview = postEditRequest.getPreview();
     }
 
     // 로그에 찍히는 content 길이 최대 40글자

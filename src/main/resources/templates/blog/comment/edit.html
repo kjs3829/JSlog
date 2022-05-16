@@ -26,7 +26,7 @@
 
 <body>
 	<div class="container">
-		<form th:object="${commentEditForm}" th:action="@{/comments/edit(redirectUrl=${redirectUrl}, redirectAuthorId=${redirectAuthorId})}" th:method="POST">
+		<form th:object="${commentEditRequest}" th:action="@{/comments/edit(redirectUrl=${redirectUrl}, redirectAuthorId=${redirectAuthorId})}" th:method="POST">
 			<input id="commentId" th:field="*{commentId}" hidden>
 			<div class="mb-5">
 				<label for="content">내용</label>

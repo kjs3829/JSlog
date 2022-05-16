@@ -3,7 +3,7 @@ package jslog.comment.ui;
 import jslog.comment.application.CommentService;
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
-import jslog.comment.ui.dto.CommentEditForm;
+import jslog.comment.ui.dto.CommentEditRequest;
 import jslog.commons.SessionConst;
 import jslog.member.auth.ui.LoginMember;
 import lombok.AllArgsConstructor;
@@ -38,13 +38,13 @@ public class CommentController {
     public String editPage(@RequestParam(name = "commentId") Long commentId,
                            @RequestParam(name = "redirectUrl") String redirectUrl,
                            @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
-                           @ModelAttribute CommentEditForm commentEditForm,
+                           @ModelAttribute CommentEditRequest commentEditRequest,
                            Model model) {
 
         Comment findComment = commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
 
-        commentEditForm.setCommentId(commentId);
-        commentEditForm.setContent(findComment.getContent());
+        commentEditRequest.setCommentId(commentId);
+        commentEditRequest.setContent(findComment.getContent());
 
         model.addAttribute("redirectUrl", redirectUrl);
         model.addAttribute("redirectAuthorId", redirectAuthorId);
@@ -56,9 +56,9 @@ public class CommentController {
     public String edit(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                        @RequestParam(name = "redirectUrl") String redirectUrl,
                        @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
-                       @ModelAttribute CommentEditForm commentEditForm) {
+                       @ModelAttribute CommentEditRequest commentEditRequest) {
 
-        commentService.edit(commentEditForm, loginMember);
+        commentService.edit(commentEditRequest, loginMember);
 
         return "redirect:/posts/"+redirectAuthorId+"/"+URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }

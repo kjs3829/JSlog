@@ -26,7 +26,7 @@
 
 <body>
 	<div class="container">
-		<form th:object="${postEditForm}" action="/posts/edit" th:method="POST">
+		<form th:object="${postEditRequest}" action="/posts/edit" th:method="POST">
 			<input id="id" th:field="*{id}" hidden>
 			<div class="my-5">
 				<label for="title">제목</label>

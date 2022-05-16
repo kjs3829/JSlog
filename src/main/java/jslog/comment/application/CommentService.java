@@ -3,7 +3,7 @@ package jslog.comment.application;
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
 import jslog.comment.ui.dto.CommentDto;
-import jslog.comment.ui.dto.CommentEditForm;
+import jslog.comment.ui.dto.CommentEditRequest;
 import jslog.comment.ui.dto.CommentResponse;
 import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
@@ -41,13 +41,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void edit(CommentEditForm commentEditForm, LoginMember loginMember) {
-        Comment findComment = commentRepository.findById(commentEditForm.getCommentId())
+    public void edit(CommentEditRequest commentEditRequest, LoginMember loginMember) {
+        Comment findComment = commentRepository.findById(commentEditRequest.getCommentId())
                 .orElseThrow(NoSuchElementException::new);
 
         checkAuthorization(findComment.getAuthor().getId(), loginMember);
 
-        findComment.edit(commentEditForm);
+        findComment.edit(commentEditRequest);
     }
 
     @Transactional

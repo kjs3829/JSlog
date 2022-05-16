@@ -5,7 +5,7 @@ import jslog.post.application.PostService;
 import jslog.post.domain.Post;
 import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
-import jslog.post.ui.dto.PostEditForm;
+import jslog.post.ui.dto.PostEditRequest;
 import jslog.post.ui.dto.PostWriteRequest;
 import jslog.commons.SessionConst;
 import lombok.RequiredArgsConstructor;
@@ -64,16 +64,16 @@ public class PostController {
 
     // TODO : 인가 프로세스 추가해야됨
     @GetMapping("/edit")
-    public String getEditPage(@RequestParam Long postId, @ModelAttribute PostEditForm postEditForm) {
+    public String getEditPage(@RequestParam Long postId, @ModelAttribute PostEditRequest postEditRequest) {
 
         Post findPost = postRepository.findById(postId).orElse(null);
 
-        postEditForm.setId(postId);
-        postEditForm.setTitle(findPost.getTitle());
-        postEditForm.setContent(findPost.getContent());
-        postEditForm.setUrl(findPost.getStringUrl());
-        postEditForm.setTags(findPost.getStringTags());
-        postEditForm.setPreview(findPost.getPreview());
+        postEditRequest.setId(postId);
+        postEditRequest.setTitle(findPost.getTitle());
+        postEditRequest.setContent(findPost.getContent());
+        postEditRequest.setUrl(findPost.getStringUrl());
+        postEditRequest.setTags(findPost.getStringTags());
+        postEditRequest.setPreview(findPost.getPreview());
 
         return "blog/edit";
     }
@@ -96,15 +96,15 @@ public class PostController {
 
     @PostMapping("/edit")
     public String edit(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
-                           @Valid @ModelAttribute PostEditForm postEditForm,
+                           @Valid @ModelAttribute PostEditRequest postEditRequest,
                            BindingResult bindingResult) {
 
-        if (!postService.updatePost(postEditForm,loginMember)) {
+        if (!postService.updatePost(postEditRequest,loginMember)) {
             bindingResult.reject("duplicatedUrl", "이미 존재하는 url 입니다.");
             return "blog/edit";
         }
 
-        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(postEditForm.getUrl()).getUrl(), StandardCharsets.UTF_8);
+        return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(postEditRequest.getUrl()).getUrl(), StandardCharsets.UTF_8);
     }
 
     @PostMapping("/delete")

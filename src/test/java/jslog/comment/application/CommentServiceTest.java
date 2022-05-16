@@ -2,8 +2,7 @@ package jslog.comment.application;
 
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
-import jslog.comment.ui.dto.CommentDto;
-import jslog.comment.ui.dto.CommentEditForm;
+import jslog.comment.ui.dto.CommentEditRequest;
 import jslog.member.auth.domain.Provider;
 import jslog.member.auth.domain.ProviderName;
 import jslog.member.auth.exception.UnauthorizedException;
@@ -13,16 +12,12 @@ import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
 import jslog.post.repository.PostRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -66,11 +61,11 @@ class CommentServiceTest {
         Comment comment = Comment.create(post,member,commentContent);
         commentRepository.save(comment);
         String editCommentContent = "edited test comment";
-        CommentEditForm commentEditForm = new CommentEditForm(comment.getId(),editCommentContent);
+        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(),editCommentContent);
         LoginMember loginMember = LoginMember.createMember(member);
 
         //when
-        commentService.edit(commentEditForm, loginMember);
+        commentService.edit(commentEditRequest, loginMember);
 
         //then
         assertThat(comment.getContent()).isEqualTo(editCommentContent);
@@ -90,12 +85,12 @@ class CommentServiceTest {
         Comment comment = Comment.create(post,member1,commentContent);
         commentRepository.save(comment);
         String editCommentContent = "edited test comment";
-        CommentEditForm commentEditForm = new CommentEditForm(comment.getId(),editCommentContent);
+        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(),editCommentContent);
         LoginMember loginMember = LoginMember.createMember(member2);
 
         //when
         //then
-        assertThrows(UnauthorizedException.class, () -> commentService.edit(commentEditForm, loginMember));
+        assertThrows(UnauthorizedException.class, () -> commentService.edit(commentEditRequest, loginMember));
     }
 
     @Test

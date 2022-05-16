@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class CommentEditForm {
+public class CommentEditRequest {
     Long commentId;
     String content;
 }
