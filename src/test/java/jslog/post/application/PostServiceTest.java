@@ -4,8 +4,10 @@ import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
 import jslog.likes.domain.Likes;
 import jslog.likes.repository.LikesRepository;
+import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.Member;
+import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.PostPageResponse;
 import jslog.post.SearchCondition;
@@ -289,7 +291,7 @@ class PostServiceTest {
     @DisplayName("첫 게시글을 작성 성공")
     void none_prev_post_writePost() {
         //given
-        PostWriteRequest postWriteRequest = new PostWriteRequest(anyString(), anyString(), anyString(), anyString(), anyString());
+        PostWriteRequest postWriteRequest = new PostWriteRequest(anyString(), anyString(), anyString(), "Tag1", anyString());
 
         Member tester1 = Member.create(any(), anyString(), any());
         memberRepository.save(tester1);
@@ -303,7 +305,7 @@ class PostServiceTest {
         assertThat(postWriteRequest.getTitle()).isEqualTo(createdPost.getTitle());
         assertThat(postWriteRequest.getContent()).isEqualTo(createdPost.getContent());
         assertThat(CustomUrl.create(postWriteRequest.getUrl()).getUrl()).isEqualTo(createdPost.getStringUrl());
-        assertThat(postWriteRequest.getTags()).isEqualTo(createdPost.getStringUrl());
+        assertThat(postWriteRequest.getTags()).isEqualTo(createdPost.getStringTags());
         assertThat(postWriteRequest.getPreview()).isEqualTo(createdPost.getPreview());
         assertThat(createdPost.getBeforePostId()).isEqualTo(null);
         assertThat(createdPost.getNextPostId()).isEqualTo(null);
@@ -341,6 +343,73 @@ class PostServiceTest {
         assertThat(createdPost.getBeforePostId()).isEqualTo(prevPost.getId());
         assertThat(createdPost.getNextPostId()).isEqualTo(null);
         assertThat(prevPost.getNextPostId()).isEqualTo(createdPost.getId());
+    }
+
+    @Test
+    @DisplayName("현재 수정중인 게시글의 url을 제외한 이미 DB에 저장되어 있는 url로 게시글 url을 수정했을 경우")
+    void duplicated_url_updatePost() {
+        //given
+        Member member = Member.create(any(),anyString(),any());
+        memberRepository.save(member);
+
+        Post post1 = Post.builder().author(member).customUrl(CustomUrl.create("주소1")).build();
+        postRepository.save(post1);
+        Post post2 = Post.builder().author(member).customUrl(CustomUrl.create("주소2")).build();
+        postRepository.save(post2);
+
+        LoginMember loginMember = LoginMember.createMember(member);
+        PostEditRequest postEditRequest = PostEditRequest.builder().id(post2.getId()).url("주소1").build();
+
+        //when
+        boolean updated = postService.updatePost(postEditRequest, loginMember);
+
+        //then
+        assertThat(updated).isFalse();
+    }
+
+    @Test
+    @DisplayName("Admin이 아니면서 다른 사람이 작성한 게시글을 수정할 경우")
+    void no_admin_delete_another_author_updatePost() {
+        //given
+        Member member = Member.create(any(),anyString(), any());
+        memberRepository.save(member);
+        Member member2 = Member.create(any(),anyString(), MemberRole.MEMBER);
+        memberRepository.save(member2);
+
+        Post post1 = Post.builder().author(member).customUrl(CustomUrl.create("주소1")).build();
+        postRepository.save(post1);
+
+        LoginMember loginMember = LoginMember.createMember(member2);
+        PostEditRequest postEditRequest = PostEditRequest.builder().id(post1.getId()).url("주소2").build();
+
+        //when
+        assertThatThrownBy(()->postService.updatePost(postEditRequest, loginMember)).isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 성공")
+    void updatePost() {
+        //given
+        Member member = Member.create(any(),anyString(), any());
+        memberRepository.save(member);
+
+        Post post = Post.builder().author(member).customUrl(CustomUrl.create("주소1")).build();
+        postRepository.save(post);
+
+        Tag tag = new Tag("태그1");
+        tagRepository.save(tag);
+
+        PostWithTag postWithTag = new PostWithTag(post, tag);
+        postWithTagRepository.save(postWithTag);
+
+        LoginMember loginMember = LoginMember.createMember(member);
+        PostEditRequest postEditRequest = PostEditRequest.builder().id(post.getId()).url("주소2").build();
+
+        //when
+        boolean updated = postService.updatePost(postEditRequest, loginMember);
+
+        //then
+        assertThat(updated).isTrue();
     }
 
     @Test

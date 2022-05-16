@@ -118,11 +118,12 @@ public class PostService {
     }
 
     @Transactional
-    public boolean updatePost(PostEditForm form, LoginMember loginMember) {
+    public boolean updatePost(PostEditRequest form, LoginMember loginMember) {
         Post post = postRepository.findById(form.getId()).orElseThrow(NoSuchElementException::new);
 
         CustomUrl customUrl = CustomUrl.create(form.getUrl());
-        if (!post.getStringUrl().equals(customUrl.getUrl()) && isDuplicatedUrl(loginMember.getId(), customUrl.getUrl())) return false;
+        Post findPost = postRepository.findByAuthorIdAndCustomUrlUrl(loginMember.getId(), customUrl.getUrl()).orElse(null);
+        if (findPost != null && !findPost.getId().equals(post.getId())) return false;
 
         checkAuthorization(loginMember, post.getAuthor().getId());
         form.setUrl(customUrl.getUrl());
