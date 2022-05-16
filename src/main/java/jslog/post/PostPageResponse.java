@@ -2,10 +2,11 @@ package jslog.post;
 
 import jslog.commons.PageResponse;
 import jslog.post.domain.Post;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
-@Getter
+@Getter @EqualsAndHashCode(callSuper = true)
 public class PostPageResponse extends PageResponse {
     SearchCondition searchCondition;
     String tag;

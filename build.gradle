@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.5.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
 }
 
 group = 'com.jslog'
@@ -18,6 +19,41 @@ repositories {
 	mavenCentral()
 }
 
+jacoco {
+	toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+	reports {
+		html.enabled true
+		xml.enabled false
+		csv.enabled false
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: 'jslog/post/ui/dto/PostWriteForm.class')
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.10
+			}
+
+			excludes = [
+			        'jslog.post.ui.dto.PostWriteForm'
+			]
+		}
+	}
+}
 dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-devtools'

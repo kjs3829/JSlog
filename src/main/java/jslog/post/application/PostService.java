@@ -47,22 +47,21 @@ public class PostService {
     public PostPageResponse getPostPageResponse(long authorId, String q, String tag, Integer p) {
         PageRequest pr = PageRequest.of(p!=null?p-1:0, PAGE_SIZE);
 
-        if (q != null && !q.equals("")) {
-            return new PostPageResponse(SearchCondition.q,
-                    q,
+        if (q == null && tag == null) {
+            return new PostPageResponse(SearchCondition.none,
                     null,
-                    postRepository.findByAuthorIdAndTitleContainingOrderByCreatedDateDesc(authorId,q, pr));
-        }
-        else if (tag != null && !tag.equals("")) {
+                    null,
+                    postRepository.findByAuthorIdOrderByCreatedDateDesc(authorId, pr));
+        } else if (q == null) {
             return new PostPageResponse(SearchCondition.tag,
                     null,
                     tag,
                     postRepository.findByAuthorIdAndPostWithTagsTagNameOrderByCreatedDateDesc(authorId, tag, pr));
         }
-        return new PostPageResponse(SearchCondition.none,
+        return new PostPageResponse(SearchCondition.q,
+                q,
                 null,
-                null,
-                postRepository.findByAuthorIdOrderByCreatedDateDesc(authorId, pr));
+                postRepository.findByAuthorIdAndTitleContainingOrderByCreatedDateDesc(authorId,q, pr));
     }
 
     public List<MemberTag> getMemberTags(Long authorId) {
@@ -93,24 +92,27 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(PostWriteForm form, LoginMember loginMember) {
+    public Post writePost(PostWriteRequest postWriteRequest, LoginMember loginMember) {
 
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
+        Member author = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
 
-        Post beforePost = getRecentPost(member.getId());
-
-        Post post = Post.builder().author(member)
-                .content(form.getContent())
-                .title(form.getTitle())
-                .customUrl(new CustomUrl(form.getUrl()))
-                .preview(form.getPreview())
-                .beforePostId(beforePost != null ? beforePost.getId() : null)
+        Post post = Post.builder().author(author)
+                .content(postWriteRequest.getContent())
+                .title(postWriteRequest.getTitle())
+                .customUrl(new CustomUrl(postWriteRequest.getUrl()))
+                .preview(postWriteRequest.getPreview())
                 .build();
+
+        Post beforePost = getRecentPost(author.getId());
+
         postRepository.save(post);
 
-        createTags(form.getTags(), post);
+        if (beforePost != null) {
+            post.setBeforePostId(beforePost.getId());
+            beforePost.setNextPostId(post.getId());
+        }
 
-        if (beforePost != null) beforePost.setNextPostId(post.getId());
+        createTags(postWriteRequest.getTags(), post);
 
         return post;
     }
@@ -134,7 +136,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long delete(LoginMember loginMember, Long postId) {
+    public Long deletePost(LoginMember loginMember, Long postId) {
         Post findPost = postRepository.findById(postId).orElseThrow(NoSuchElementException::new);
 
         checkAuthorization(loginMember, findPost.getAuthor().getId());
@@ -142,13 +144,11 @@ public class PostService {
         // 이전포스트, 다음포스트 재배치
         if (findPost.getBeforePostId() != null) {
             Post bp = postRepository.findById(findPost.getBeforePostId()).orElseThrow(NoSuchElementException::new);
-            if (findPost.getNextPostId() != null) bp.setNextPostId(findPost.getNextPostId());
-            else bp.setNextPostId(null);
+            bp.setNextPostId(findPost.getNextPostId());
         }
         if (findPost.getNextPostId() != null) {
             Post np = postRepository.findById(findPost.getNextPostId()).orElseThrow(NoSuchElementException::new);
-            if (findPost.getBeforePostId() != null) np.setBeforePostId(findPost.getBeforePostId());
-            else np.setBeforePostId(null);
+            np.setBeforePostId(findPost.getBeforePostId());
         }
 
         commentService.deleteByPostId(findPost.getId());

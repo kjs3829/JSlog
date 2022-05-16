@@ -26,7 +26,7 @@
 
 <body>
 <div class="container">
-	<form th:object="${postWriteForm}" action="/posts" method="post">
+	<form th:object="${postWriteRequest}" action="/posts" method="post">
 		<div class="my-5">
 			<label for="title">제목</label>
 			<textarea class="form-control" id="title" rows="1" cols="40" placeholder="제목을 입력하세요" th:field="*{title}"></textarea>

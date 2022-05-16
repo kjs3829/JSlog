@@ -2,13 +2,14 @@ package jslog.post.ui.dto;
 
 import jslog.member.member.domain.Member;
 import jslog.tag.domain.Tag;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class PostResponse {
     private Long id;
     private Member author;

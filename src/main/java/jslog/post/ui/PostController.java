@@ -6,7 +6,7 @@ import jslog.post.domain.Post;
 import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.PostEditForm;
-import jslog.post.ui.dto.PostWriteForm;
+import jslog.post.ui.dto.PostWriteRequest;
 import jslog.commons.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ public class PostController {
     }
 
     @GetMapping("/write")
-    public String getWritePage(@ModelAttribute PostWriteForm postWriteForm) {
+    public String getWritePage(@ModelAttribute PostWriteRequest postWriteRequest) {
         return "blog/write";
     }
 
@@ -79,7 +79,7 @@ public class PostController {
     }
 
     @PostMapping("")
-    public String write(@Valid @ModelAttribute PostWriteForm form, BindingResult bindingResult,
+    public String write(@Valid @ModelAttribute PostWriteRequest form, BindingResult bindingResult,
                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) {
 
         form.setUrl(CustomUrl.create(form.getUrl()).getUrl());
@@ -89,7 +89,7 @@ public class PostController {
             return "blog/write";
         }
 
-        postService.createPost(form, loginMember);
+        postService.writePost(form, loginMember);
 
         return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(), StandardCharsets.UTF_8);
     }
@@ -110,7 +110,7 @@ public class PostController {
     @PostMapping("/delete")
     public String deletePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                              @RequestParam Long postId){
-        Long authorId = postService.delete(loginMember, postId);
+        Long authorId = postService.deletePost(loginMember, postId);
 
         return "redirect:/posts/" + authorId;
     }

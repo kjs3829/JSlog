@@ -2,13 +2,14 @@ package jslog.commons;
 
 import jslog.post.SearchCondition;
 import jslog.post.domain.Post;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Getter @EqualsAndHashCode
 public class PageResponse {
     int pageSize;
     int startPage;
