@@ -2,157 +2,125 @@ package jslog.likes.application;
 
 import jslog.likes.domain.Likes;
 import jslog.likes.repository.LikesRepository;
-import jslog.member.auth.domain.Provider;
-import jslog.member.auth.domain.ProviderName;
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.Member;
 import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
-import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.LikesResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 class LikesServiceTest {
 
-    @Autowired private MemberRepository memberRepository;
-    @Autowired private PostRepository postRepository;
-    @Autowired private LikesService likesService;
-    @Autowired private LikesRepository likesRepository;
+    @Mock MemberRepository memberRepository;
+    @Mock PostRepository postRepository;
+    @Mock LikesRepository likesRepository;
+    LikesService likesService;
+
+    Member member;
+    LoginMember loginMember;
+    Post post;
+    Likes likes;
+
+    @BeforeEach
+    void setUp() {
+        likesService = new LikesService(memberRepository,postRepository,likesRepository);
+
+        member = Member.builder()
+                .id(1L)
+                .nickname("테스트유저")
+                .memberRole(MemberRole.MEMBER)
+                .build();
+
+        loginMember = LoginMember.createMember(member);
+
+        post = Post.builder()
+                .id(1L)
+                .author(member)
+                .title("첫번째 게시글 제목")
+                .content("첫번째 게시글 내용!!")
+                .build();
+
+        likes = Likes.create(member, post);
+    }
 
     @Test
-    @DisplayName("비로그인 사용자의 likesResponse 생성 성공")
+    @DisplayName("비로그인 사용자가 게시글의 좋아요를 조회한다.")
     void non_login_user_createLikesResponse() {
-        //given
-        Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
+        when(likesRepository.countLikesByPostId(any())).thenReturn(0);
 
-        Post post = Post.builder().customUrl(CustomUrl.create("1")).author(member).build();
-        postRepository.save(post);
+        LikesResponse likesResponse = likesService.createLikesResponse(null, 1L);
 
-        //when
-        LikesResponse likesResponse = likesService.createLikesResponse(null, post.getId());
-
-        //then
-        assertThat(likesResponse.getLikes()).isEqualTo(likesRepository.countLikesByPostId(post.getId()));
-        assertThat(likesResponse.isLogin()).isEqualTo(false);
-        assertThat(likesResponse.isLiked()).isEqualTo(false);
+        assertThat(likesResponse).isEqualTo(LikesResponse.create(0, false, false));
     }
 
     @Test
-    @DisplayName("로그인 사용자이면서 좋아요를 누르지 않은 likesResponse 생성 성공")
+    @DisplayName("게시글에 좋아요를 누르지 않은 로그인 사용자가 게시글의 좋아요를 조회한다.")
     void login_user_non_like_createLikesResponse() {
-        //given
-        Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        LoginMember loginMember = LoginMember.createMember(member);
+        when(likesRepository.countLikesByPostId(any())).thenReturn(0);
+        when(likesRepository.findByMemberIdAndPostId(any(),any())).thenReturn(Optional.empty());
 
-        Post post = Post.builder().customUrl(CustomUrl.create("1")).author(member).build();
-        postRepository.save(post);
+        LikesResponse likesResponse = likesService.createLikesResponse(loginMember, 1L);
 
-        //when
-        LikesResponse likesResponse = likesService.createLikesResponse(loginMember, post.getId());
-
-        //then
-        assertThat(likesResponse.getLikes()).isEqualTo(likesRepository.countLikesByPostId(post.getId()));
-        assertThat(likesResponse.isLogin()).isEqualTo(true);
-        assertThat(likesResponse.isLiked()).isEqualTo(false);
+        assertThat(likesResponse).isEqualTo(LikesResponse.create(0, true, false));
     }
 
     @Test
-    @DisplayName("로그인 사용자이면서 좋아요를 누른 likesResponse 생성 성공")
+    @DisplayName("게시글에 좋아요를 누른 로그인 사용자가 게시글의 좋아요를 조회한다.")
     void login_user_like_createLikesResponse() {
-        //given
-        Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        LoginMember loginMember = LoginMember.createMember(member);
+        when(likesRepository.countLikesByPostId(any())).thenReturn(0);
+        when(likesRepository.findByMemberIdAndPostId(any(),any())).thenReturn(Optional.of(likes));
 
-        Post post = Post.builder().customUrl(CustomUrl.create("1")).author(member).build();
-        postRepository.save(post);
+        LikesResponse likesResponse = likesService.createLikesResponse(loginMember, 1L);
 
-        likesRepository.save(Likes.create(member, post));
-
-        //when
-        LikesResponse likesResponse = likesService.createLikesResponse(loginMember, post.getId());
-
-        //then
-        assertThat(likesResponse.getLikes()).isEqualTo(likesRepository.countLikesByPostId(post.getId()));
-        assertThat(likesResponse.isLogin()).isEqualTo(true);
-        assertThat(likesResponse.isLiked()).isEqualTo(true);
+        assertThat(likesResponse).isEqualTo(LikesResponse.create(0, true, true));
     }
 
     @Test
-    @DisplayName("좋아요 생성 성공")
+    @DisplayName("게시글에 좋아요를 누른다.")
     void like() {
-        //given
-        Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        LoginMember loginMember = LoginMember.createMember(member);
+        when(likesRepository.save(any())).thenReturn(likes);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(postRepository.findById(any())).thenReturn(Optional.of(post));
 
-        Post post = Post.builder().customUrl(CustomUrl.create("1")).author(member).build();
-        postRepository.save(post);
+        Long likesId = likesService.like(loginMember.getId(), post.getId());
 
-        //when
-        Likes likes = likesService.like(loginMember.getId(), post.getId());
-
-        //then
-        assertThat(likes.getMember()).isEqualTo(member);
-        assertThat(likes.getPost()).isEqualTo(post);
+        assertThat(likesId).isEqualTo(likes.getId());
     }
 
     @Test
-    @DisplayName("좋아요 삭제 성공")
+    @DisplayName("게시글의 좋아요를 취소한다.")
     void unlike() {
-        //given
-        Member member = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO),"Tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        LoginMember loginMember = LoginMember.createMember(member);
+        when(likesRepository.findByMemberIdAndPostId(any(),any())).thenReturn(Optional.of(likes));
 
-        Post post = Post.builder().customUrl(CustomUrl.create("1")).author(member).build();
-        postRepository.save(post);
+        likesService.unlike(loginMember.getId(), post.getId());
 
-        Likes likes = likesRepository.save(Likes.create(member, post));
-
-        //when
-        Long deleteLikesId = likesService.unlike(loginMember.getId(), post.getId());
-
-        //then
-        assertThat(likes.getId()).isEqualTo(deleteLikesId);
-        assertThrows(NoSuchElementException.class,() -> likesRepository.findById(deleteLikesId).orElseThrow(NoSuchElementException::new));
+        verify(likesRepository).delete(likes);
     }
 
     @Test
+    @DisplayName("게시글에 눌린 모든 좋아요를 삭제한다.")
     void deleteByPostId() {
-        //given
-        Member tester1 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester1", MemberRole.MEMBER);
-        Member tester2 = Member.create(Provider.create("KAKAOID", ProviderName.KAKAO), "tester2", MemberRole.MEMBER);
-        memberRepository.save(tester1);
-        memberRepository.save(tester2);
-        Post post1 = Post.builder().customUrl(CustomUrl.create("1")).author(tester1).build();
-        Post post2 = Post.builder().customUrl(CustomUrl.create("2")).author(tester1).build();
-        postRepository.save(post1);
-        postRepository.save(post2);
-        likesRepository.save(Likes.create(tester1,post1));
-        likesRepository.save(Likes.create(tester1,post2));
-        likesRepository.save(Likes.create(tester2,post1));
+        when(likesRepository.findByPostId(any())).thenReturn(new ArrayList<>(Arrays.asList(likes)));
 
-        //when
-        likesService.deleteByPostId(post1.getId());
+        likesService.deleteByPostId(post.getId());
 
-        //then
-        assertThat(likesRepository.findByPostId(post1.getId()).size()).isEqualTo(0);
+        verify(likesRepository).delete(likes);
     }
 
 }

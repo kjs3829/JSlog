@@ -2,10 +2,7 @@ package jslog.likes.domain;
 
 import jslog.member.member.domain.Member;
 import jslog.post.domain.Post;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -31,6 +28,13 @@ public class Likes {
     }
 
     private Likes(Member member, Post post) {
+        this.member = member;
+        this.post = post;
+    }
+
+    @Builder
+    public Likes(Long id, Member member, Post post) {
+        this.id = id;
         this.member = member;
         this.post = post;
     }

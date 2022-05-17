@@ -28,16 +28,14 @@ public class LikesService {
         }
     }
 
-    public Likes like(Long loginMemberId, Long postId) {
+    public Long like(Long loginMemberId, Long postId) {
         return likesRepository.save(Likes.create(memberRepository.findById(loginMemberId).orElseThrow(NoSuchElementException::new),
-                postRepository.findById(postId).orElseThrow(NoSuchElementException::new)));
+                postRepository.findById(postId).orElseThrow(NoSuchElementException::new))).getId();
     }
 
-    public Long unlike(Long loginMemberId, Long postId) {
+    public void unlike(Long loginMemberId, Long postId) {
         Likes deleteLikes = likesRepository.findByMemberIdAndPostId(loginMemberId, postId).orElseThrow(NoSuchElementException::new);
         likesRepository.delete(deleteLikes);
-
-        return deleteLikes.getId();
     }
 
     public void deleteByPostId(Long postId) {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,7 +46,7 @@ public class LikesControllerTest {
 
         Likes likes = Likes.create(member, post);
 
-        when(likesService.like(any(),any())).thenReturn(likes);
+        when(likesService.like(any(),any())).thenReturn(1L);
 
         mockMvc.perform(get("/likes/like")
                 .sessionAttr("loginMember",loginMember)
@@ -64,7 +65,7 @@ public class LikesControllerTest {
                 .build();
         LoginMember loginMember = LoginMember.createMember(member);
 
-        when(likesService.unlike(any(),any())).thenReturn(1L);
+        doNothing().when(likesService).unlike(any(),any());
 
         mockMvc.perform(get("/likes/unlike")
                 .sessionAttr("loginMember",loginMember)
