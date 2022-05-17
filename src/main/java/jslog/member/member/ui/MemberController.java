@@ -2,7 +2,7 @@ package jslog.member.member.ui;
 
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.application.MemberService;
-import jslog.member.member.ui.dto.ProfileUpdateForm;
+import jslog.member.member.ui.dto.ProfileUpdateRequest;
 import jslog.commons.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /*
     TODO:
@@ -28,8 +29,8 @@ public class MemberController {
     @GetMapping("/setting")
     public String settingMemberForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                                     Model model) {
-        ProfileUpdateForm profileUpdateForm = loginMember.getProfileUpdateForm();
-        model.addAttribute("profileUpdateForm", profileUpdateForm);
+
+        model.addAttribute("profileUpdateRequest", new ProfileUpdateRequest(loginMember.getNickname()));
         model.addAttribute("loginMember", loginMember);
 
         return "member-setting";
@@ -37,10 +38,10 @@ public class MemberController {
 
     @PostMapping("/setting")
     public String updateMemberProfile(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
-                                      @ModelAttribute ProfileUpdateForm profileUpdateForm,
-                                      HttpServletRequest request) {
+                                      @ModelAttribute ProfileUpdateRequest profileUpdateRequest,
+                                      HttpSession session) {
 
-        memberService.updateMember(loginMember, profileUpdateForm, request);
+        memberService.updateMember(loginMember, profileUpdateRequest, session);
 
         return "redirect:/members/setting";
     }
