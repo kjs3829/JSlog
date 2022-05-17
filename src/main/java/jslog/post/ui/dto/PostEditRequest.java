@@ -18,7 +18,6 @@ public class PostEditRequest {
     @NotEmpty private String url;
     private String preview;
 
-
     @Builder
     public PostEditRequest(Long id, Member author, String title, String content, String tags, String url, String preview) {
         this.id = id;

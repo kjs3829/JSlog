@@ -62,22 +62,6 @@ public class PostController {
         return "blog/write";
     }
 
-    // TODO : 인가 프로세스 추가해야됨
-    @GetMapping("/edit")
-    public String getEditPage(@RequestParam Long postId, @ModelAttribute PostEditRequest postEditRequest) {
-
-        Post findPost = postRepository.findById(postId).orElse(null);
-
-        postEditRequest.setId(postId);
-        postEditRequest.setTitle(findPost.getTitle());
-        postEditRequest.setContent(findPost.getContent());
-        postEditRequest.setUrl(findPost.getStringUrl());
-        postEditRequest.setTags(findPost.getStringTags());
-        postEditRequest.setPreview(findPost.getPreview());
-
-        return "blog/edit";
-    }
-
     @PostMapping("")
     public String write(@Valid @ModelAttribute PostWriteRequest form, BindingResult bindingResult,
                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember) {
@@ -92,6 +76,22 @@ public class PostController {
         postService.writePost(form, loginMember);
 
         return "redirect:/posts/"+loginMember.getId()+"/"+ URLEncoder.encode(CustomUrl.create(form.getUrl()).getUrl(), StandardCharsets.UTF_8);
+    }
+
+    // TODO : 인가 프로세스 추가해야됨
+    @GetMapping("/edit")
+    public String getEditPage(@RequestParam Long postId, @ModelAttribute PostEditRequest postEditRequest) {
+
+        Post findPost = postRepository.findById(postId).orElse(null);
+
+        postEditRequest.setId(postId);
+        postEditRequest.setTitle(findPost.getTitle());
+        postEditRequest.setContent(findPost.getContent());
+        postEditRequest.setUrl(findPost.getStringUrl());
+        postEditRequest.setTags(findPost.getStringTags());
+        postEditRequest.setPreview(findPost.getPreview());
+
+        return "blog/edit";
     }
 
     @PostMapping("/edit")

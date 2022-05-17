@@ -2,14 +2,14 @@ package jslog.post.ui.dto;
 
 import jslog.member.member.domain.Member;
 import jslog.tag.domain.Tag;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+@Getter @NoArgsConstructor @EqualsAndHashCode
 public class PostResponse {
     private Long id;
     private Member author;
@@ -18,6 +18,17 @@ public class PostResponse {
     private String url;
     private List<Tag> tags;
     private String createdDate;
+
+    @Builder
+    public PostResponse(Long id, Member author, String title, String content, String url, List<Tag> tags, String createdDate) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+        this.tags = tags;
+        this.createdDate = createdDate;
+    }
 
     private PostResponse(PostDto postDto) {
         this.id = postDto.getId();

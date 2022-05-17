@@ -14,7 +14,6 @@ import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -26,6 +25,14 @@ public class Member extends BaseEntity {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
+    @Builder
+    public Member(Long id, Provider provider, String nickname, MemberRole memberRole) {
+        this.id = id;
+        this.provider = provider;
+        this.nickname = nickname;
+        this.memberRole = memberRole;
+    }
 
     public static Member create(Provider provider, String nickname, MemberRole memberRole) {
         return new Member(null, provider, nickname, memberRole);

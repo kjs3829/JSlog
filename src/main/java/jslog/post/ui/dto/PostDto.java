@@ -17,9 +17,11 @@ public class PostDto {
     private String content;
     private String url;
     private List<Tag> tags;
+    private String stringTags;
     private String createdDate;
     private Long beforePostId;
     private Long nextPostId;
+    private String preview;
 
     private PostDto(Post post) {
         this.id = post.getId();
@@ -28,9 +30,11 @@ public class PostDto {
         this.content = post.getContent();
         this.url = post.getStringUrl();
         this.tags = post.getTags();
+        this.stringTags = post.getStringTags();
         this.createdDate = post.getCreatedDateYYYYMMDD();
         this.beforePostId = post.getBeforePostId();
         this.nextPostId = post.getNextPostId();
+        this.preview = post.getPreview();
     }
 
     public static PostDto create(Post post) {
