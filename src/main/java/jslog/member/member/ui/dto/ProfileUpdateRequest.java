@@ -1,16 +1,16 @@
 package jslog.member.member.ui.dto;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
-public class ProfileUpdateForm {
-
-    @Getter @Setter
+@Getter @Setter
+public class ProfileUpdateRequest {
     String nickname;
 
-    public ProfileUpdateForm(String nickname) {
+    @Builder
+    public ProfileUpdateRequest(String nickname) {
         this.nickname = nickname;
     }
 }

@@ -2,7 +2,7 @@ package jslog.member.auth.ui;
 
 import jslog.member.member.domain.Member;
 import jslog.member.member.domain.MemberRole;
-import jslog.member.member.ui.dto.ProfileUpdateForm;
+import jslog.member.member.ui.dto.ProfileUpdateRequest;
 import lombok.*;
 
 @Getter
@@ -22,7 +22,7 @@ public class LoginMember {
         return new LoginMember(id, nickname, memberRole);
     }
 
-    public ProfileUpdateForm getProfileUpdateForm() {
-        return new ProfileUpdateForm(this.getNickname());
+    public ProfileUpdateRequest getProfileUpdateForm() {
+        return new ProfileUpdateRequest(this.getNickname());
     }
 }

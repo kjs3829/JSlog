@@ -58,7 +58,7 @@
             <div class="container">
                 <div class="content">
                     <div class="join_content">
-                        <form action="" th:action th:object="${profileUpdateForm}" method="post">
+                        <form action="" th:action th:object="${profileUpdateRequest}" method="post">
                             <label for="userNickname">닉네임</label>
                             <div class="form-group">
                                 <input name="userNickName" id="userNickname" th:field="*{nickname}" type="text" class="form-control">
