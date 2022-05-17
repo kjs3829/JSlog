@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * TODO : TAG Split 객체 구현
@@ -166,7 +167,7 @@ public class PostService {
     }
 
     public boolean isDuplicatedUrl(Long id, String customUrl) {
-        return customUrl.equals("") || postRepository.findByAuthorIdAndCustomUrlUrl(id, customUrl).orElse(null) != null;
+        return postRepository.findByAuthorIdAndCustomUrlUrl(id, customUrl).orElse(null) != null;
     }
 
     private Post getRecentPost(Long authorId) {
@@ -188,9 +189,12 @@ public class PostService {
                 String[] tags = tagString.split(",");
                 for (String tag : tags) {
                     String tagName = tag.trim();
-                    Tag findOrCreateTag = tagRepository.findTagByName(tagName).orElseGet(() -> new Tag(tagName));
-                    tagRepository.save(findOrCreateTag);
-                    postWithTagRepository.save(new PostWithTag(post, findOrCreateTag));
+                    Tag findTag = tagRepository.findTagByName(tagName).orElse(null);
+                    if (findTag == null) {
+                        findTag = new Tag(tagName);
+                        tagRepository.save(findTag);
+                    }
+                    postWithTagRepository.save(new PostWithTag(post, findTag));
                 }
             }
         }

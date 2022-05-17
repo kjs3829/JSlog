@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 // JPA Entity들이 BaseTimeEntity을 상속할 경우
 // 필드들(createdDate, modifiedDate)도 컬럼으로 인식하도록 한다.
@@ -32,7 +33,7 @@ public abstract class BaseEntity {
     }
 
     public String getCreatedDateYYYYMMDD() {
-        return this.createdDate.format(customDateTimeFormatter);
+        return Objects.requireNonNullElseGet(createdDate, LocalDateTime::now).format(customDateTimeFormatter);
     }
 
     public String getModifiedDateYYYYMMDD() {
