@@ -61,7 +61,7 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("비로그인 사용자가 게시글의 좋아요를 조회한다.")
-    void non_login_user_createLikesResponse() {
+    void createLikesResponse_by_non_login_user() {
         when(likesRepository.countLikesByPostId(any())).thenReturn(0);
 
         LikesResponse likesResponse = likesService.createLikesResponse(null, 1L);
@@ -71,7 +71,7 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("게시글에 좋아요를 누르지 않은 로그인 사용자가 게시글의 좋아요를 조회한다.")
-    void login_user_non_like_createLikesResponse() {
+    void createLikesResponse_by_non_like_login_user() {
         when(likesRepository.countLikesByPostId(any())).thenReturn(0);
         when(likesRepository.findByMemberIdAndPostId(any(),any())).thenReturn(Optional.empty());
 
@@ -82,7 +82,7 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("게시글에 좋아요를 누른 로그인 사용자가 게시글의 좋아요를 조회한다.")
-    void login_user_like_createLikesResponse() {
+    void createLikesResponse_by_liked_login_user() {
         when(likesRepository.countLikesByPostId(any())).thenReturn(0);
         when(likesRepository.findByMemberIdAndPostId(any(),any())).thenReturn(Optional.of(likes));
 
@@ -115,10 +115,10 @@ class LikesServiceTest {
 
     @Test
     @DisplayName("게시글에 눌린 모든 좋아요를 삭제한다.")
-    void deleteByPostId() {
+    void deleteLikesByPostId() {
         when(likesRepository.findByPostId(any())).thenReturn(new ArrayList<>(Arrays.asList(likes)));
 
-        likesService.deleteByPostId(post.getId());
+        likesService.deleteLikesByPostId(post.getId());
 
         verify(likesRepository).delete(likes);
     }

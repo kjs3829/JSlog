@@ -8,6 +8,7 @@ import jslog.post.repository.PostRepository;
 import jslog.post.ui.dto.LikesResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -19,6 +20,7 @@ public class LikesService {
     private final LikesRepository likesRepository;
 
     //TODO : 파라미터로 loginMemberId를 받게 수정해야함(그러기 위해서 비로그인 이용자에게 세션 발급해줘야함)
+    @Transactional(readOnly = true)
     public LikesResponse createLikesResponse(LoginMember loginMember, Long postId) {
         int likes = likesRepository.countLikesByPostId(postId);
         if (loginMember == null) {
@@ -28,17 +30,20 @@ public class LikesService {
         }
     }
 
+    @Transactional
     public Long like(Long loginMemberId, Long postId) {
         return likesRepository.save(Likes.create(memberRepository.findById(loginMemberId).orElseThrow(NoSuchElementException::new),
                 postRepository.findById(postId).orElseThrow(NoSuchElementException::new))).getId();
     }
 
+    @Transactional
     public void unlike(Long loginMemberId, Long postId) {
         Likes deleteLikes = likesRepository.findByMemberIdAndPostId(loginMemberId, postId).orElseThrow(NoSuchElementException::new);
         likesRepository.delete(deleteLikes);
     }
 
-    public void deleteByPostId(Long postId) {
+    @Transactional
+    public void deleteLikesByPostId(Long postId) {
         likesRepository.findByPostId(postId).forEach(likesRepository::delete);
     }
 

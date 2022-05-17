@@ -19,25 +19,25 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Transactional(readOnly = true)
 public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
+    @Transactional(readOnly = true)
     public CommentResponse createCommentResponse(Long postId) {
         return CommentResponse.create(commentRepository.findByPostId(postId).stream()
                 .map(CommentDto::create).collect(Collectors.toList()));
     }
 
     @Transactional
-    public Comment write(String comment, Long postId, Long AuthorId) {
+    public Long write(String comment, Long postId, Long AuthorId) {
         return commentRepository.save(
                 Comment.create(
                         postRepository.findById(postId).orElseThrow(NoSuchElementException::new),
                         memberRepository.findById(AuthorId).orElseThrow(NoSuchElementException::new),
                         comment)
-        );
+        ).getId();
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteByPostId(Long postId) {
+    public void deleteCommentsByPostId(Long postId) {
         for (Comment comment : commentRepository.findByPostId(postId)) {
             commentRepository.delete(comment);
         }

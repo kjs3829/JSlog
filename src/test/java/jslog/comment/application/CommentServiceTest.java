@@ -3,8 +3,6 @@ package jslog.comment.application;
 import jslog.comment.domain.Comment;
 import jslog.comment.repository.CommentRepository;
 import jslog.comment.ui.dto.CommentEditRequest;
-import jslog.member.auth.domain.Provider;
-import jslog.member.auth.domain.ProviderName;
 import jslog.member.auth.exception.UnauthorizedException;
 import jslog.member.auth.ui.LoginMember;
 import jslog.member.member.domain.Member;
@@ -12,142 +10,117 @@ import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
 import jslog.post.repository.PostRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
-    @Autowired private PostRepository postRepository;
-    @Autowired private CommentService commentService;
-    @Autowired private CommentRepository commentRepository;
-    @Autowired private MemberRepository memberRepository;
+    @Mock CommentRepository commentRepository;
+    @Mock MemberRepository memberRepository;
+    @Mock PostRepository postRepository;
+    CommentService commentService;
 
-    @Test
-    @DisplayName("댓글 작성 성공")
-    void writeTest() {
-        //given
-        Member member = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        String commentContent = "test comment";
+    Member member;
+    LoginMember loginMember;
+    Post post;
+    Comment comment;
 
-        //when
-        Comment comment = commentService.write(commentContent, post.getId(), member.getId());
+    @BeforeEach
+    void setUp() {
+        commentService = new CommentService(commentRepository,memberRepository,postRepository);
 
-        //then
-        assertThat(comment.getContent()).isEqualTo(commentContent);
-        assertThat(comment.getPost().getTitle()).isEqualTo("1");
+        member = Member.builder()
+                .id(1L)
+                .nickname("테스트유저")
+                .memberRole(MemberRole.MEMBER)
+                .build();
+
+        loginMember = LoginMember.createMember(member);
+
+        post = Post.builder().id(1L)
+                .author(member)
+                .title("첫번째 게시글 제목!!")
+                .content("첫번째 게시글 내용!!!")
+                .build();
+
+        comment = Comment.create(post, member, "댓글 내용!!");
     }
 
     @Test
-    @DisplayName("댓글 수정 성공")
-    void edit_success() {
-        //given
-        Member member = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        String commentContent = "test comment";
-        Comment comment = Comment.create(post,member,commentContent);
-        commentRepository.save(comment);
-        String editCommentContent = "edited test comment";
-        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(),editCommentContent);
-        LoginMember loginMember = LoginMember.createMember(member);
+    @DisplayName("댓글을 작성한다.")
+    void write() {
+        when(postRepository.findById(any())).thenReturn(Optional.of(post));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(commentRepository.save(any())).thenReturn(comment);
 
-        //when
+        commentService.write(comment.getContent(), post.getId(), member.getId());
+
+        verify(commentRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("댓글을 수정한다.")
+    void edit() {
+        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(), "수정된 댓글 내용!!");
+        when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
+
         commentService.edit(commentEditRequest, loginMember);
 
-        //then
-        assertThat(comment.getContent()).isEqualTo(editCommentContent);
+        assertThat(comment.getContent()).isEqualTo(commentEditRequest.getContent());
     }
 
     @Test
-    @DisplayName("댓글 수정 실패 - 인가되지 않은 접근")
-    void edit_fail_unauthorizedAccess() {
-        //given
-        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        Member member2 = Member.create(Provider.create("2", ProviderName.LOCAL), "tester2", MemberRole.MEMBER);
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        String commentContent = "test comment";
-        Comment comment = Comment.create(post,member1,commentContent);
-        commentRepository.save(comment);
-        String editCommentContent = "edited test comment";
-        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(),editCommentContent);
-        LoginMember loginMember = LoginMember.createMember(member2);
+    @DisplayName("어드민이 아닌 악성 사용자가 다른 사람의 댓글을 수정하려 한다. - 수정 실패")
+    void edit_fail_cause_by_unauthorized_access() {
+        CommentEditRequest commentEditRequest = new CommentEditRequest(comment.getId(), "수정된 댓글 내용!!");
+        when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
 
-        //when
-        //then
-        assertThrows(UnauthorizedException.class, () -> commentService.edit(commentEditRequest, loginMember));
+        LoginMember anotherLoginMember = LoginMember.createMember(2L,"다른 유저", MemberRole.MEMBER);
+
+        assertThrows(UnauthorizedException.class, () -> commentService.edit(commentEditRequest, anotherLoginMember));
     }
 
     @Test
-    @DisplayName("댓글 삭제 성공")
-    void deleteTest() {
-        //given
-        Member member = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        memberRepository.save(member);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        String commentContent = "test comment";
-        Comment comment = Comment.create(post,member,commentContent);
-        commentRepository.save(comment);
-        LoginMember loginMember = LoginMember.createMember(member);
+    @DisplayName("댓글을 삭제한다.")
+    void delete() {
+        when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
 
-        //when
         commentService.delete(comment.getId(),loginMember);
 
-        //then
-        assertThrows(NoSuchElementException.class, () -> commentRepository.findById(comment.getId()).orElseThrow(NoSuchElementException::new));
+        verify(commentRepository).delete(any());
     }
 
     @Test
-    @DisplayName("댓글 삭제 실패 - 인가되지 않은 접근")
-    void delete_fail_unauthorizedAccess() {
-        //given
-        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        Member member2 = Member.create(Provider.create("2", ProviderName.LOCAL), "tester2", MemberRole.MEMBER);
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        String commentContent = "test comment";
-        Comment comment = Comment.create(post,member1,commentContent);
-        commentRepository.save(comment);
-        LoginMember loginMember = LoginMember.createMember(member2);
+    @DisplayName("어드민이 아닌 악성 사용자가 다른 사람의 댓글을 삭제하려 한다. - 삭제 실패")
+    void delete_fail_cause_by_unauthorized_access() {
+        when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
 
-        //when
-        //then
-        assertThrows(UnauthorizedException.class, () -> commentService.delete(comment.getId(),loginMember));
+        LoginMember anotherLoginMember = LoginMember.createMember(2L,"다른 유저", MemberRole.MEMBER);
+
+        assertThrows(UnauthorizedException.class, () -> commentService.delete(comment.getId(),anotherLoginMember));
     }
 
     @Test
-    @DisplayName("게시글 ID로 해당 게시글에 등록되어있는 모든 댓글 삭제 성공")
-    void deleteByPostId() {
-        //given
-        Member member1 = Member.create(Provider.create("1", ProviderName.LOCAL), "tester1", MemberRole.MEMBER);
-        memberRepository.save(member1);
-        Post post = Post.builder().title("1").build();
-        postRepository.save(post);
-        Comment comment = Comment.create(post,member1,"test comment");
-        commentRepository.save(comment);
+    @DisplayName("게시글에 등록된 모든 댓글들을 삭제한다.")
+    void deleteCommentsByPostId() {
+        when(commentRepository.findByPostId(any())).thenReturn(new ArrayList<>(Arrays.asList(comment)));
 
-        //when
-        commentService.deleteByPostId(post.getId());
+        commentService.deleteCommentsByPostId(post.getId());
 
-        //then
-        assertThat(commentRepository.findByPostId(post.getId()).size()).isEqualTo(0);
+        verify(commentRepository).delete(comment);
     }
 }

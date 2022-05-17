@@ -152,13 +152,13 @@ public class PostService {
             np.setBeforePostId(findPost.getBeforePostId());
         }
 
-        commentService.deleteByPostId(findPost.getId());
+        commentService.deleteCommentsByPostId(findPost.getId());
 
         for (PostWithTag postWithTag : findPost.getPostWithTags()) {
             postWithTagRepository.delete(postWithTag);
         }
 
-        likesService.deleteByPostId(findPost.getId());
+        likesService.deleteLikesByPostId(findPost.getId());
 
         postRepository.delete(findPost);
 
