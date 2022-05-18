@@ -1,6 +1,7 @@
 package jslog.post.ui.dto;
 
 import jslog.member.member.domain.Member;
+import jslog.post.domain.Post;
 import jslog.tag.domain.Tag;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,17 +31,17 @@ public class PostResponse {
         this.createdDate = createdDate;
     }
 
-    private PostResponse(PostDto postDto) {
-        this.id = postDto.getId();
-        this.author = postDto.getAuthor();
-        this.title = postDto.getTitle();
-        this.content = postDto.getContent();
-        this.url = postDto.getUrl();
-        this.tags = postDto.getTags();
-        this.createdDate = postDto.getCreatedDate();
+    private PostResponse(Post post) {
+        this.id = post.getId();
+        this.author = post.getAuthor();
+        this.title = post.getTitle();
+        this.content = post.getRenderedContent();
+        this.url = post.getCustomUrl().getUrl();
+        this.tags = post.getTags();
+        this.createdDate = post.getCreatedDateYYYYMMDD();
     }
 
-    public static PostResponse create(PostDto postDto) {
-        return new PostResponse(postDto);
+    public static PostResponse create(Post post) {
+        return new PostResponse(post);
     }
 }

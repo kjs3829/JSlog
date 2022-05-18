@@ -203,7 +203,7 @@ class PostServiceTest {
 
         PostReadResponse postReadResponse = postService.getPostReadResponse(member.getId(), post1.getStringUrl(), null);
 
-        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(PostDto.create(post1)),
+        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(post1),
                 null,
                 null,
                 commentResponse,
@@ -223,8 +223,8 @@ class PostServiceTest {
 
         PostReadResponse postReadResponse = postService.getPostReadResponse(member.getId(), post2.getStringUrl(), null);
 
-        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(PostDto.create(post2)),
-                PrevNextPostResponse.create(PostDto.create(post1)),
+        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(post2),
+                PrevNextPostResponse.create(post1),
                 null,
                 commentResponse,
                 likesResponse));
@@ -243,9 +243,9 @@ class PostServiceTest {
 
         PostReadResponse postReadResponse = postService.getPostReadResponse(member.getId(), post1.getStringUrl(), null);
 
-        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(PostDto.create(post1)),
+        assertThat(postReadResponse).isEqualTo(new PostReadResponse(PostResponse.create(post1),
                 null,
-                PrevNextPostResponse.create(PostDto.create(post2)),
+                PrevNextPostResponse.create(post2),
                 commentResponse,
                 likesResponse));
     }

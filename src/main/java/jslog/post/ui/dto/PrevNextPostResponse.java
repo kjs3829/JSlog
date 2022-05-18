@@ -1,5 +1,6 @@
 package jslog.post.ui.dto;
 
+import jslog.post.domain.Post;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,13 @@ public class PrevNextPostResponse {
     private String title;
     private Long authorId;
 
-    private PrevNextPostResponse(PostDto postDto) {
-        this.title = postDto.getTitle();
-        this.url = postDto.getUrl();
-        this.authorId = postDto.getAuthor().getId();
+    private PrevNextPostResponse(Post post) {
+        this.title = post.getTitle();
+        this.url = post.getCustomUrl().getUrl();
+        this.authorId = post.getAuthor().getId();
     }
 
-    public static PrevNextPostResponse create(PostDto postDto) {
-        return new PrevNextPostResponse(postDto);
+    public static PrevNextPostResponse create(Post post) {
+        return new PrevNextPostResponse(post);
     }
 }
