@@ -67,7 +67,7 @@ class CommentServiceTest {
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(commentRepository.save(any())).thenReturn(comment);
 
-        commentService.write(comment.getContent(), post.getId(), member.getId());
+        commentService.write(comment.getContent(), post.getId(), loginMember);
 
         verify(commentRepository).save(any());
     }

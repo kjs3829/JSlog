@@ -151,7 +151,7 @@
 												<input disabled class="btn btn-primary px-3 py-2 rounded" type="submit" name="submit-contact" value="댓글 작성">
 											</div>
 										</div>
-										<form th:unless = "${loginMember} == null" class="contact-form bg-white rounded" th:action="@{/comments (redirectUrl=${post.postResponse.url}, redirectAuthorId=${post.postResponse.author.id}, postId=${post.postResponse.id}, authorId=${loginMember.id})}" method="POST">
+										<form th:unless = "${loginMember} == null" class="contact-form bg-white rounded" th:action="@{/comments (redirectUrl=${post.postResponse.url}, redirectAuthorId=${post.postResponse.author.id}, postId=${post.postResponse.id})}" method="POST">
 											<textarea class="form-control mb-3" name="comment" id="comment" cols="30" rows="3" placeholder="댓글을 작성하세요"></textarea>
 
 											<div class="buttons-wrapper">

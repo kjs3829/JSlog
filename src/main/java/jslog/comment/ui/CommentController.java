@@ -23,13 +23,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping()
-    public String write(@RequestParam(name = "redirectUrl") String redirectUrl,
+    public String write(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+                        @RequestParam(name = "redirectUrl") String redirectUrl,
                         @RequestParam(name = "redirectAuthorId") Long redirectAuthorId,
                         @RequestParam(name = "postId") Long postId,
-                        @RequestParam(name = "authorId") Long authorId,
                         @RequestParam(name = "comment") String comment) {
 
-        commentService.write(comment,postId,authorId);
+        commentService.write(comment,postId,loginMember);
 
         return "redirect:/posts/"+redirectAuthorId+"/"+ URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
     }

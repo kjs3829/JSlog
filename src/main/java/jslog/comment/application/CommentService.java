@@ -31,11 +31,11 @@ public class CommentService {
     }
 
     @Transactional
-    public Long write(String comment, Long postId, Long AuthorId) {
+    public Long write(String comment, Long postId, LoginMember loginMember) {
         return commentRepository.save(
                 Comment.create(
                         postRepository.findById(postId).orElseThrow(NoSuchElementException::new),
-                        memberRepository.findById(AuthorId).orElseThrow(NoSuchElementException::new),
+                        memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new),
                         comment)
         ).getId();
     }
