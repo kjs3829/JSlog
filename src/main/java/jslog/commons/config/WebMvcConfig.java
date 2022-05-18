@@ -1,6 +1,5 @@
 package jslog.commons.config;
 
-import jslog.commons.interceptor.AdminCheckInterceptor;
 import jslog.commons.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -46,21 +46,4 @@ public class MemberController {
         return "redirect:/members/setting";
     }
 
-    // member테이블 cascade설정 안함. 즉, 현재 게시글이 존재하는 멤버는 탈퇴가 불가능함.
-    @GetMapping("/kakao/delete")
-    public String kakaoDelete(String code, HttpServletRequest request) {
-        String REDIRECT_URI ="http://localhost:8080/members/kakao/delete";
-        /*
-        KakaoAuthToken authToken = kakaoLoginAPI.getAuthToken(code, REDIRECT_URI);
-        kakaoLoginAPI.unLink(authToken);
-
-        HttpSession session = request.getSession(false);
-        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        KakaoMember deleteMember = kakaoMemberRepository.findById(member.getId());
-        kakaoMemberRepository.delete(deleteMember);
-        session.invalidate();*/
-
-        return "redirect:/";
-    }
-
 }

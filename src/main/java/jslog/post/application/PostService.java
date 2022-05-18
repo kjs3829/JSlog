@@ -15,7 +15,7 @@ import jslog.post.ui.dto.*;
 import jslog.postWithTag.domain.PostWithTag;
 import jslog.post.repository.PostRepository;
 import jslog.postWithTag.repository.PostWithTagRepository;
-import jslog.tag.MemberTag;
+import jslog.post.ui.dto.MemberTag;
 import jslog.tag.domain.Tag;
 import jslog.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 /**
  * TODO : TAG Split 객체 구현
@@ -77,14 +76,14 @@ public class PostService {
 
         if (post.hasBeforePost()) {
             Post prevPost = postRepository.findById(post.getBeforePostId()).orElseThrow(NoSuchElementException::new);
-            prevPostResponse = PrevNextPostResponse.create(PostDto.create(prevPost));
+            prevPostResponse = PrevNextPostResponse.create(prevPost);
         }
         if (post.hasNextPost()) {
             Post nextPost = postRepository.findById(post.getNextPostId()).orElseThrow(NoSuchElementException::new);
-            nextPostResponse = PrevNextPostResponse.create(PostDto.create(nextPost));
+            nextPostResponse = PrevNextPostResponse.create(nextPost);
         }
 
-        return new PostReadResponse(PostResponse.create(PostDto.create(post)),
+        return new PostReadResponse(PostResponse.create(post),
                 prevPostResponse,
                 nextPostResponse,
                 commentService.createCommentResponse(post.getId()),

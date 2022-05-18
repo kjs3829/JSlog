@@ -1,25 +1,14 @@
 package jslog.tag.repository;
 
-import jslog.member.auth.domain.Provider;
-import jslog.member.auth.domain.ProviderName;
-import jslog.member.member.domain.Member;
-import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
-import jslog.post.domain.Post;
-import jslog.post.domain.url.CustomUrl;
 import jslog.post.repository.PostRepository;
-import jslog.postWithTag.domain.PostWithTag;
 import jslog.postWithTag.repository.PostWithTagRepository;
-import jslog.tag.MemberTag;
 import jslog.tag.domain.Tag;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 

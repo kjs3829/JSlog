@@ -1,4 +1,4 @@
-package jslog.tag;
+package jslog.post.ui.dto;
 
 import lombok.*;
 

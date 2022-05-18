@@ -8,7 +8,7 @@ import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
 import jslog.post.repository.PostRepository;
 import jslog.postWithTag.domain.PostWithTag;
-import jslog.tag.MemberTag;
+import jslog.post.ui.dto.MemberTag;
 import jslog.tag.domain.Tag;
 import jslog.tag.repository.TagRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
