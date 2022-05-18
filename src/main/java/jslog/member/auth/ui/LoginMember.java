@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class LoginMember {
     Long id;
     String nickname;

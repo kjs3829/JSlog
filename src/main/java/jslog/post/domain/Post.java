@@ -5,7 +5,7 @@ import jslog.member.member.domain.Member;
 import jslog.commons.domain.BaseEntity;
 import jslog.post.domain.url.CustomUrl;
 import jslog.post.ui.dto.PostEditRequest;
-import jslog.postWithTag.domain.PostWithTag;
+import jslog.postwithtag.domain.PostWithTag;
 import jslog.tag.domain.Tag;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,10 +43,9 @@ public class Post extends BaseEntity {
     private String preview;
     @Setter private Long beforePostId;
     @Setter private Long nextPostId;
-    private int hit;
 
     @Builder
-    public Post (Long id, Member author, String title, String content, CustomUrl customUrl, String preview, Long beforePostId, int hit) {
+    public Post (Long id, Member author, String title, String content, CustomUrl customUrl, String preview, Long beforePostId) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -54,7 +53,6 @@ public class Post extends BaseEntity {
         this.customUrl = customUrl;
         this.preview = preview;
         this.beforePostId = beforePostId;
-        this.hit = hit;
     }
 
     public boolean hasBeforePost() {

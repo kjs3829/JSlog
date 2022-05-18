@@ -1,6 +1,6 @@
-package jslog.postWithTag.repository;
+package jslog.postwithtag.repository;
 
-import jslog.postWithTag.domain.PostWithTag;
+import jslog.postwithtag.domain.PostWithTag;
 import jslog.post.ui.dto.MemberTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

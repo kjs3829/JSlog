@@ -16,15 +16,6 @@ public class ClientResponseConverter {
 
     private final ObjectMapper objectMapper;
 
-    public <T> MultiValueMap<String, String> convertHttpBody(T body) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        final Map<String, String> map =
-                objectMapper.convertValue(body, new TypeReference<>() {
-                });
-        params.setAll(map);
-        return params;
-    }
-
     public String extractDataAsString(String json, String dataName) {
         try {
             return objectMapper.readTree(json).get(dataName).asText();

@@ -1,4 +1,4 @@
-package jslog.postWithTag.domain;
+package jslog.postwithtag.domain;
 
 import jslog.post.domain.Post;
 import jslog.tag.domain.Tag;

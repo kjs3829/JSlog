@@ -3,7 +3,6 @@ package jslog.member.auth.ui;
 import jslog.member.auth.application.LoginService;
 import jslog.member.auth.infrastructure.kakao.KakaoOauthInfo;
 import jslog.member.auth.domain.ProviderName;
-import jslog.member.member.domain.Member;
 import jslog.commons.SessionConst;
 import jslog.member.auth.ui.dto.LoginForm;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +27,14 @@ public class LoginController {
         String kakaoAuth = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+kakaoOauthInfo.getClientId()+"&redirect_uri="+kakaoOauthInfo.getKakaoRedirectUrl();
         model.addAttribute("kakaoAuth", kakaoAuth);
         model.addAttribute("loginMember", loginMember);
+
         return "sign-in";
     }
 
     @GetMapping("/auth/kakao/login")
-    public String kakaoLogin(String code, HttpServletRequest request) {
+    public String kakaoLogin(@RequestParam String code, HttpServletRequest request) {
         loginService.createSession(request, ProviderName.KAKAO,code);
-        System.out.println(request.getSession().getAttribute(SessionConst.LOGIN_MEMBER));
+
         return "redirect:/";
     }
 

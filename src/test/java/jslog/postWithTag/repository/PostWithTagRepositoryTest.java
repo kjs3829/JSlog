@@ -1,4 +1,4 @@
-package jslog.postWithTag.repository;
+package jslog.postwithtag.repository;
 
 import jslog.member.auth.domain.Provider;
 import jslog.member.auth.domain.ProviderName;
@@ -7,7 +7,7 @@ import jslog.member.member.domain.MemberRole;
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.domain.Post;
 import jslog.post.repository.PostRepository;
-import jslog.postWithTag.domain.PostWithTag;
+import jslog.postwithtag.domain.PostWithTag;
 import jslog.post.ui.dto.MemberTag;
 import jslog.tag.domain.Tag;
 import jslog.tag.repository.TagRepository;

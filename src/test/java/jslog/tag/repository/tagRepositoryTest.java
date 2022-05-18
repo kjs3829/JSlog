@@ -2,7 +2,7 @@ package jslog.tag.repository;
 
 import jslog.member.member.repository.MemberRepository;
 import jslog.post.repository.PostRepository;
-import jslog.postWithTag.repository.PostWithTagRepository;
+import jslog.postwithtag.repository.PostWithTagRepository;
 import jslog.tag.domain.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
