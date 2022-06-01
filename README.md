@@ -6,7 +6,7 @@
 
 ---
 
-JSLog는 T story나 Velog와 같이 콘텐츠를 발행하고 공유하는 블로그 서비스입니다.
+JSLog는 Tistory나 Velog와 같이 콘텐츠를 발행하고 공유하는 블로그 서비스입니다.
 
 
 <br>
